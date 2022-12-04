@@ -1,0 +1,10 @@
+# Dependency directories
+node_modules/
+dist/
+keys/
+
+# Optional npm cache directory
+.npm
+
+# Output of 'npm pack'
+*.tgz
