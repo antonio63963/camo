@@ -62,12 +62,12 @@ class Validation {
         return this;
       },
       // example: 'png', 'jpg', 'jpeg'
-      fileFormat() {
-        if (!isValid || !arguments) {
+      fileFormat(...formats: string[]) {
+        if (!isValid || !formats.length) {
           return this;
         }
-        const reg = Array.from(arguments).reduce(function (acc, item, ind) {
-          if (arguments.length - 1 === ind) {
+        const reg = formats.reduce(function (acc, item, ind) {
+          if (formats.length - 1 === ind) {
             acc += item;
           } else {
             acc += ` ${item} |`;
