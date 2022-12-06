@@ -19,7 +19,6 @@ const PinDetailsContainer: FC<PinProps> = ({ user }) => {
   const { pinId } = useParams();
 
   const userInfo = storage.getUser();
-  console.log(userInfo)
 
   const [pins, setPins] = useState(null);
   const [pinDetails, setPinDetails] = useState<PinDetailsProps | null>(null);
@@ -38,7 +37,21 @@ const PinDetailsContainer: FC<PinProps> = ({ user }) => {
         setPinDetails(pinData);
       }
     } catch (err) {}
-  }
+  };
+
+  const getSamePins = useCallback(async() => {
+    if(pinDetails && pinDetails.category) {
+      try {
+        const {data: {status, samePins}} = await axios.get(`/pins/${pinDetails.category}/category`);
+        if(status === "ok") {
+          console.log('pinsSame: ', samePins);
+          setPins(samePins);
+        }
+      } catch (err) {
+        setModal({ isModal: true, ...catchErrors(err) });
+      };
+    }
+  }, [pinDetails, setModal]);
 
   const addComment = useCallback(async () => {
     const messageResult = validation
@@ -81,6 +94,10 @@ const PinDetailsContainer: FC<PinProps> = ({ user }) => {
       fetchPinDetails(pinId);
     }
   }, [pinId]);
+
+  useEffect(() => {
+    getSamePins()
+  }, [pinDetails])
 
   return (
     <>

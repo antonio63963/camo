@@ -16,7 +16,7 @@ type PinProps = {
 
 type PinDetailsProps = {
   image: string;
-  distination: string;
+  category: string;
   title: string;
   about: string;
   postedBy: User;
