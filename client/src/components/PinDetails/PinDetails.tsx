@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 
 import { MdDownloadForOffline } from "react-icons/md";
 
+import storage from "utils/appStorage";
+
 import { CreateComment } from "components";
 
 const iconStyle =
@@ -22,10 +24,10 @@ type Comment = {
 
 type Pin = {
   image: string;
-  distination: string;
   title: string;
   about: string;
   postedBy: User;
+  category: string;
   comments?: Comment[];
 };
 
@@ -41,7 +43,7 @@ type PinDetailsProps = {
 
 const PinDetails: FC<PinDetailsProps> = ({
   pin,
-  user,
+  user = storage.getUser(),
   comment,
   setComment,
   addComment,
@@ -61,8 +63,8 @@ const PinDetails: FC<PinDetailsProps> = ({
         />
       </div>
       <div className="flex-1 w-full xl:min-w-620 p-4">
-        <div className="flex justify-center items-center">
-          <div className="flex gap-2 items-center">
+        <div className="flex flex-col justify-center items-start">
+          <div className="flex w-full gap-2 items-center justify-between">
             <a
               href="#" //path to dwl the image
               // href={pinDetails?.image}
@@ -73,6 +75,7 @@ const PinDetails: FC<PinDetailsProps> = ({
             >
               <MdDownloadForOffline />
             </a>
+            <span>{pin.category}</span>
           </div>
           {/* <a href={pinDetails?.destination} target="_blank" rel="noopener"> */}
           <div>
