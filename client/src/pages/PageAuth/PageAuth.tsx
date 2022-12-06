@@ -34,7 +34,6 @@ const PageAuth: FC<AuthProps> = ({ onGoogleSuccess, onLoginFailed, }) => {
               }}}
               onError={() => {
                 onLoginFailed();
-                console.log("Login Failed");
               }}
             />
 

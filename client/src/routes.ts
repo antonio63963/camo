@@ -1,7 +1,7 @@
 class Routes {
   HOME = "/";
 
-  AUTH_SIGNIN = "/login";
+  AUTH_SIGNIN = "/auth/login";
   PINS = "/pins";
 
   PIN_SHOW = "/pin/:id";

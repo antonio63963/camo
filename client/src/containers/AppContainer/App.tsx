@@ -2,6 +2,7 @@ import React, { FC, useCallback, useEffect, useState } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
 
 import AuthContext from "context/AuthContext";
+import AppContext from "context/AppContext";
 import storage from "services/storage.service";
 import routes from "routes";
 
@@ -14,10 +15,11 @@ import { AppProps, Tokens, UserInfo } from "./App.type";
 import PageAuthContainer from "pages/PageAuth/PageAuthContainer";
 import PageNotFound from "pages/PageNotFound/PageNotFound";
 import PageHome from "pages/PageHome/PageHome";
+import Modal from "components/Modal";
 
 const App: FC<AppProps> = function App({ history }) {
   const navigate = useNavigate();
-  const [isError, setIsError] = useState(false);
+  const [{isModal, title: modalTitle, message: modalMessage}, setModal] = useState({ isModal: false, title: "", message: "" });
   const [isAuthenticated, setIsUserAuthenticated] = useState(
     !!storage.getTokens()
   );
@@ -51,20 +53,28 @@ const App: FC<AppProps> = function App({ history }) {
         setIsAuthenticated,
       }}
     >
-      <Routes>
-        <Route
-          path="/404"
-          element={
-            <PageNotFound
-              errCode={404}
-              errMessage={"Something has gone wrong on our side!"}
-            />
-          }
+      <AppContext.Provider value={{isModal, setModal }}>
+      {isModal && (
+        <Modal
+          title={modalTitle}
+          message={modalMessage}
+          closeModal={() => setModal({isModal: false, title: '', message: ''})}
         />
-        <Route path="/login" element={<PageAuthContainer />} />
-        <Route path="/*" element={<PageHome />} />
-      </Routes>
-      
+      )}
+        <Routes>
+          <Route
+            path="/404"
+            element={
+              <PageNotFound
+                errCode={404}
+                errMessage={"Something has gone wrong on our side!"}
+              />
+            }
+          />
+          <Route path="/auth/login" element={<PageAuthContainer />} />
+          <Route path="/*" element={<PageHome />} />
+        </Routes>
+      </AppContext.Provider>
     </AuthContext.Provider>
   );
 };

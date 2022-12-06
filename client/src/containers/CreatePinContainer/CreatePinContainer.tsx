@@ -1,7 +1,7 @@
 import React, { FC, useCallback, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import validation from "services/validation.servise";
+import validation from "services/validation.service";
 
 import Spinner from "components/Spinner";
 import { categories } from "utils/data";

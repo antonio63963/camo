@@ -1,17 +1,22 @@
-import React, { FC, useContext, useState } from "react";
+import React, { FC, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-import AuthContext from "context/AuthContext/AuthContext";
-import storage from 'services/storage.service';
+import { AuthContext, AppContext } from "context";
+import storage from "services/storage.service";
 
-import Modal from "components/Modal";
 import PageAuth from "./PageAuth";
+
+const modalObj = {
+  isModal: true,
+  title: "Error",
+  message: "Authorization is failed!",
+};
 
 const PageAuthContainer: FC = () => {
   const { setIsAuthenticated } = useContext(AuthContext);
+  const { setModal } = useContext(AppContext);
   const navigate = useNavigate();
-  const [loginFailed, setLoginFailed] = useState<boolean>(false);
 
   const onGoogleSuccess = async (token: string) => {
     try {
@@ -25,29 +30,20 @@ const PageAuthContainer: FC = () => {
         storage.saveUserInfo(userInfo);
         navigate("/", { replace: true });
       } else {
-        setLoginFailed(true);
+        setModal(modalObj);
         throw Error("Authorization is failed!");
       }
     } catch (err: any) {
-      setLoginFailed(true);
+      // setLoginFailed(true);
       throw new Error(err.message);
     }
   };
 
   return (
-    <>
-      {loginFailed && (
-        <Modal
-          title="Error"
-          message="Could not sign you in! Try again."
-          closeModal={() => setLoginFailed(false)}
-        />
-      )}
-      <PageAuth
-        onGoogleSuccess={onGoogleSuccess}
-        onLoginFailed={() => setLoginFailed(true)}
-      />
-    </>
+    <PageAuth
+      onGoogleSuccess={onGoogleSuccess}
+      onLoginFailed={() => setModal(modalObj)}
+    />
   );
 };
 

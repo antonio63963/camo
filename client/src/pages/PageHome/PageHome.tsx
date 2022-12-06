@@ -15,7 +15,7 @@ const PageHome: FC = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const userStorage = localStorage.getItem("userInfo");
-  const userInfo: User = userStorage ? JSON.parse(userStorage) : navigate('/login');
+  const userInfo: User = userStorage ? JSON.parse(userStorage) : navigate('/auth/login');
 
   useEffect(() => {
     if (null != scrollRef.current) {
