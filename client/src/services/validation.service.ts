@@ -1,20 +1,6 @@
-type Check = {
-  isEmpty: () => Object;
-  minLength: (data: number) => Check;
-  maxLength: (data: number) => Check;
-  email: () => Check;
-  url: () => Check;
-  fileFormat: (data: string) => Check;
-};
-
-type Result = {
-  isValid: boolean;
-  message: string;
-};
 
 class Validation {
-  string(stringData: string) {
-    const str = stringData;
+  string(str: string) {
     let isValid = true;
     let message = "";
     const check = {
@@ -31,15 +17,15 @@ class Validation {
           return this;
         }
         isValid = str.length >= min;
-        if (!isValid) message = `Min length would be than ${min}`;
+        if (!isValid) message = `Min length would be more than ${min}`;
         return this;
       },
       maxLength(max: number) {
         if (!isValid) {
           return this;
         }
-        isValid = str.length > max;
-        if (!isValid) message = `Min length would be than ${max}`;
+        isValid = str.length <= max;
+        if (!isValid) message = `Min length would  be less than ${max}`;
         return this;
       },
       email() {
