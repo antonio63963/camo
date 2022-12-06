@@ -6,7 +6,7 @@ import validation from "services/validation.service";
 import Spinner from "components/Spinner";
 import { categories } from "utils/data";
 import axios from "axios";
-import ImageFileInputContainer from "containers/ImageFileInputContainer";
+import { ImageFileInputContainer } from "containers";
 import { setEmitFlags } from "typescript";
 import CreatePinInputs from "components/CreatePinInputs";
 import SaveButton from "components/SaveButton";
@@ -30,7 +30,7 @@ const CreatePin: FC<CreatePinProps> = ({ user }) => {
 
   const navigate = useNavigate();
 
-  const savePin = useCallback(async() => {
+  const savePin = useCallback(async () => {
     if (title && about && (imageAsset || imageLink) && category) {
       const titleValidationResult = validation
         .string(title)
@@ -56,9 +56,11 @@ const CreatePin: FC<CreatePinProps> = ({ user }) => {
         imageLink,
         postedBy: user.id,
       };
-      const {data: { pin }} = await axios.post("/pins", doc);
-      if(pin) {
-        console.log(pin)
+      const {
+        data: { pin },
+      } = await axios.post("/pins", doc);
+      if (pin) {
+        console.log(pin);
       }
     } else {
       setFields(true);

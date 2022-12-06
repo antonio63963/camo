@@ -7,7 +7,7 @@ import { GoogleOAuthProvider } from "@react-oauth/google";
 import axiosService from "services/axios.service";
 
 import "./index.css";
-import App from "containers/AppContainer";
+import { App } from "containers";
 import reportWebVitals from "./reportWebVitals";
 
 const root = ReactDOM.createRoot(

@@ -3,12 +3,7 @@ import React, { FC, useState } from "react";
 import Spinner from "components/Spinner";
 import ImageFileInput from "components/ImageFileInput";
 
-type InputProps = {
-  imageAsset: File | null;
-  setImageAsset: (file: File | null) => void;
-  imageLink: string;
-  setImageLink: (data: string) => void;
-};
+import { InputProps } from './ImageFileInputContainer.type';
 
 const ImageFileInputContainer: FC<InputProps> = ({
   setImageAsset,

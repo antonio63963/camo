@@ -4,10 +4,10 @@ import { HiMenu } from "react-icons/hi";
 import { AiFillCloseCircle } from "react-icons/ai";
 
 import { Sidebar, UserProfile } from "../../components";
-import Pins from "../../containers/Pins";
+import { PinsContainer } from "containers";
 import logo from "assets/logo.png";
 
-import { User } from './PageHome.type';
+import { User } from "./PageHome.type";
 
 const PageHome: FC = () => {
   const navigate = useNavigate();
@@ -15,7 +15,9 @@ const PageHome: FC = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const userStorage = localStorage.getItem("userInfo");
-  const userInfo: User = userStorage ? JSON.parse(userStorage) : navigate('/auth/login');
+  const userInfo: User = userStorage
+    ? JSON.parse(userStorage)
+    : navigate("/auth/login");
 
   useEffect(() => {
     if (null != scrollRef.current) {
@@ -70,7 +72,7 @@ const PageHome: FC = () => {
       >
         <Routes>
           <Route path="/user-profile/:userId" element={<UserProfile />} />
-          <Route path="/*" element={<Pins user={userInfo && userInfo} />} />
+          <Route path="/*" element={<PinsContainer user={userInfo && userInfo} />} />
         </Routes>
       </div>
     </div>

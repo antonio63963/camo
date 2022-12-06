@@ -1,4 +1,4 @@
-type UserData = {
+export type UserData = {
   name: string;
   email: string;
   picture: string;
@@ -12,7 +12,7 @@ class AppStorage {
       JSON.stringify(userData))
   }
   getUser() {
-    const user = localStorage.getItem("user");
+    const user = localStorage.getItem("userInfo");
     if(user)
     return JSON.parse(user);
   }

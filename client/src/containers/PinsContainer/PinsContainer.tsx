@@ -1,8 +1,8 @@
 import React, { FC, useState } from "react";
 import { Routes, Route } from "react-router-dom";
 
-import CreatePinContainer from "containers/CreatePinContainer";
-import { Search, Navbar, Feed, PinDetail } from "components";
+import {CreatePinContainer, PinDetailsContainer} from "containers";
+import { Search, Navbar, Feed } from "components";
 
 type UserInfo = {
   id: string;
@@ -33,7 +33,7 @@ const Pins: FC<PinProps> = ({ user }) => {
           <Route path="/category/:categoryId" element={<Feed />} />
           <Route
             path="/pin-detail/:pinId"
-            element={<PinDetail user={user} />}
+            element={<PinDetailsContainer user={user} />}
           />
           <Route path="/create-pin" element={<CreatePinContainer user={user} />} />
           <Route
