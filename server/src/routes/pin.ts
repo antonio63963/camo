@@ -14,6 +14,7 @@ const pinRouter = express.Router();
 // pinRouter.get("/students", PinController.students);
 pinRouter.get("/", PinController.index);
 pinRouter.get("/:id", PinController.show);
+pinRouter.get("/:category/:id", PinController.samePins);
 pinRouter.post("/:id/comments", PinController.addComment);
 pinRouter.post(
   "/",
@@ -56,7 +57,7 @@ pinRouter.put(
 pinRouter.delete(
   '/:id/materials/',
   checkIsTeacher,
-  PinController.deleteMaterial
+  // PinController.deleteMaterial
 )
 
 export default pinRouter;

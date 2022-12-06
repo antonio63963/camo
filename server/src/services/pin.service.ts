@@ -7,7 +7,6 @@ import commentService from "services/comment.service";
 
 class PinService {
   async createPin(pinData: General) {
-    console.log("PinData: ", pinData);
     const doc = new PinModel();
     serviceUtils.createDoc(doc, pinData);
     const { id, title, about, image, category, postedBy } = await doc.save();
@@ -15,9 +14,18 @@ class PinService {
   }
 
   async getPins() {
-    return await PinModel.find({}, { comments: false, about: false }).populate(
-      "postedBy"
-    );
+    return await PinModel.find({}, { comments: false, about: false })
+      .populate("postedBy")
+      .limit(30);
+  }
+
+  async getSamePins(category: string) {
+    return await PinModel.find(
+      { category: category },
+      { comments: false, about: false }
+    )
+      .populate("postedBy")
+      .limit(20);
   }
 
   async editPin(updateData: General) {
@@ -47,7 +55,7 @@ class PinService {
   async getPinById(pinId: string) {
     return await PinModel.findOne({ _id: pinId })
       .populate("postedBy")
-      .populate({path: "comments", populate: { path: 'user'}}); // fields
+      .populate({ path: "comments", populate: { path: "user" } }); // fields
   }
 
   async checkIsListExist(owner: string, title: string) {
@@ -57,8 +65,6 @@ class PinService {
   async findListByTitle(owner: string, title: string) {
     return await PinModel.findOne({ owner, title });
   }
-
-
 
   async getListsForStudent(userId: string, listIds: string[]) {
     const lists = await PinModel.find(
