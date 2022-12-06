@@ -1,31 +1,40 @@
 import PinModel from "models/pin";
 import { General } from "models/pin.type";
+import { Comment } from "models/comment.type";
 
-import serviceUtils from './serviceUtils';
+import serviceUtils from "./serviceUtils";
+import commentService from "services/comment.service";
 
 class PinService {
   async createPin(pinData: General) {
-    console.log('PinData: ', pinData);
+    console.log("PinData: ", pinData);
     const doc = new PinModel();
     serviceUtils.createDoc(doc, pinData);
-    // console.log('doc: ', doc)
-    // const createdDoc = await doc.save();
-    // console.log('Created DOOOOCCCC: ', createdDoc)
     const { id, title, about, image, category, postedBy } = await doc.save();
-    console.log('PinDoc: ', title, about, image, category, postedBy)
     return { id, title, about, image, category, postedBy };
   }
 
   async getPins() {
-    return await PinModel.find({}, {comments: false, about: false}).populate('postedBy');
+    return await PinModel.find({}, { comments: false, about: false }).populate(
+      "postedBy"
+    );
   }
 
   async editPin(updateData: General) {
     const { id, title, about, image, category, postedBy } = updateData;
     return await PinModel.findOneAndUpdate(
-      { _id: id, postedBy},
-      { title, about, image, category}
+      { _id: id, postedBy },
+      { title, about, image, category }
     );
+  }
+
+  async addNewComment(commentData: Comment) {
+    const { _id } = await commentService.create(commentData);
+    const doc = await PinModel.findOneAndUpdate(
+      { _id: commentData.pinId },
+      { $push: { comments: _id } }
+    );
+    return doc.comments;
   }
 
   async removePin(pinId: string, postedBy: string) {
@@ -33,25 +42,13 @@ class PinService {
       { _id: pinId, postedBy },
       { _id: true }
     );
-  };
+  }
 
   async getPinById(pinId: string) {
-    return await (await PinModel.findOne({ _id: pinId }).populate('postedBy')).populated('comments');
+    return await PinModel.findOne({ _id: pinId })
+      .populate("postedBy")
+      .populate({path: "comments", populate: { path: 'user'}}); // fields
   }
-
-  async createComment(pinId: string, comment: Comment) {
-    const doc = await PinModel.findOneAndUpdate(
-      { _id: pinId },
-      { $push: { comments: comment } }
-    );
-    return doc;
-  }
-
-
-
-
-
-
 
   async checkIsListExist(owner: string, title: string) {
     return await PinModel.exists({ owner, title });
@@ -61,9 +58,6 @@ class PinService {
     return await PinModel.findOne({ owner, title });
   }
 
-  // async createMediaList(mediaListData: General) {
-  //   return await PinModel.create(mediaListData);
-  // }
 
 
   async getListsForStudent(userId: string, listIds: string[]) {
@@ -78,7 +72,7 @@ class PinService {
           },
         },
       },
-      { id: true, title: true, materials: true },
+      { id: true, title: true, materials: true }
     );
     // return lists.map(list => {
     //   list.materialsCount = list.materials.length;
@@ -90,7 +84,7 @@ class PinService {
   async getListsForTeacher(userId: string) {
     const lists = await PinModel.find(
       { owner: userId },
-      { title: true, isPublic: true, materials: true },
+      { title: true, isPublic: true, materials: true }
     );
     // return lists.map(list => {
     //   list.materialsCount = list.materials.length;
@@ -98,8 +92,6 @@ class PinService {
     //   return list;
     // });
   }
-
-  
 
   async findMaterialByUrl(listId: string, url: string) {
     return await PinModel.findOne({
@@ -119,8 +111,6 @@ class PinService {
     });
   }
 
-
-
   // async editMaterial(listId: string, userId: string, material: Material) {
   //   return await PinModel.findOneAndUpdate(
   //     { _id: listId, owner: userId },
@@ -136,7 +126,10 @@ class PinService {
   async removeMaterial(listId: string, userId: string, deletedId: string) {
     return await PinModel.findOneAndUpdate(
       { _id: listId, owner: userId },
-      { $pull: { materials: { _id: deletedId } }, $inc: { materialsCount: -1 } },
+      {
+        $pull: { materials: { _id: deletedId } },
+        $inc: { materialsCount: -1 },
+      },
       { rawResult: true }
     ).select({ materials: { $elemMatch: { _id: deletedId } } });
   }

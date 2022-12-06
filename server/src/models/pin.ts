@@ -28,27 +28,8 @@ const generalSchema = new Schema<General>(
       type: Schema.Types.String,
       required: true,
     },
-    comments: [
-      {
-        id: {
-          type: Schema.Types.String,
-          required: true,
-          unique: true,
-        },
-        user: {
-          type: Schema.Types.ObjectId,
-          ret: "user",
-        },
-        message: {
-          type: Schema.Types.String,
-          required: true,
-        },
-        data: {
-          type: Schema.Types.Number,
-          required: true,
-        },
-      },
-    ],
+    // comments: [],
+    comments: [{ type: Schema.Types.ObjectId, ref: "comment" }],
   },
   { timestamps: true }
 );

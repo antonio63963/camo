@@ -7,12 +7,7 @@ type General = {
   image: string;
   about: string;
   category: string;
-  comments: Comment[];
-};
-
-type Comment = {
-  user: ObjectId;
-  message: string;
+  comments: ObjectId[];
 };
 
 export type {

@@ -4,7 +4,6 @@ import uniqid from "uniqid";
 import ApiError from "lib/ApiError";
 import pinService from "services/pin.service";
 
-
 class PinController {
   async index(req: Request, res: Response, next: NextFunction) {
     console.log('Pin index: ', req.params);
@@ -37,29 +36,31 @@ class PinController {
   async show(req: Request, res: Response, next: NextFunction) {
     try {
       const pinId = req.params.id;
-      console.log('DETAILS=====', pinId)
-      const pinData = await pinService.getPinById(pinId);
-      console.log('PIN DAta: ', pinData)
+      const pinData = await pinService.getPinById(pinId); 
       if(pinData) {
         res.json({ status: 'ok', pinData });
       } else {
         throw ApiError.NotFound();
       }
     } catch (err) {
+      console.log('ERRR SHOW: ', err)
       next(err);
     }
   };
 
   async addComment(req: Request, res: Response, next: NextFunction) {
     const pinId = req.params.id;
-    const commentId = uniqid();
+    const comment = req.body;
+    console.log('ADDD CMMM', comment)
     try {
-      const doc = await pinService.createComment(pinId, {...req.body, id: pinId});
-      console.log('After commit: ', doc.comments)
-      // res.json({
-      //   materials,
-      // });
+      const comments = await pinService.addNewComment({...comment, pinId});
+      console.log('After commit: ', comments)
+      res.json({
+        status: 'ok',
+        comments,
+      });
     } catch (err) {
+      console.log('ERRR ADD COMMENT: ', err)
       next(err);
     }
   };

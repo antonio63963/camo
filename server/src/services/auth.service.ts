@@ -1,7 +1,6 @@
 import UserModel from "models/user";
 import bcrypt from "bcrypt";
 
-import teacherService from "services/teacher.service";
 import tokenService from "services/token.service";
 import ApiError from "lib/ApiError";
 
@@ -62,15 +61,7 @@ class UserService {
       throw ApiError.UnauthorizedError();
     }
 
-    const isTeacher = await teacherService.checkIsTeacher(user.id);
-    const token = await tokenService.createAccessToken({
-      uid: user.id,
-    });
-    const tokenDoc = await tokenService.saveTokenToDB(user.id, token);
-    if (!tokenDoc) {
-      throw ApiError.ServerError();
-    }
-    return { token: tokenDoc.token, userId: user._id };
+    
   }
 }
 

@@ -12,7 +12,7 @@ const generalSchema = new Schema<Comment, mongoose.Model<Comment>>({
   },
   user: {
     type: Schema.Types.ObjectId,
-    ret: "user",
+    ref: "user",
   },
   message: {
     type: Schema.Types.String,
@@ -24,6 +24,9 @@ const generalSchema = new Schema<Comment, mongoose.Model<Comment>>({
   },
 });
 
+generalSchema.virtual("id").get(function () {
+  return this._id.toHexString();
+});
 generalSchema.set("toJSON", { virtuals: true });
 
 const modelName = path.basename(__filename, ".ts");
