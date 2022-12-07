@@ -42,10 +42,9 @@ const PinDetailsContainer: FC<PinProps> = ({ user }) => {
   const getSamePins = useCallback(async() => {
     if(pinDetails && pinDetails.category) {
       try {
-        const {data: {status, samePins}} = await axios.get(`/pins/${pinDetails.category}/category`);
+        const {data: {status, pins}} = await axios.get(`/pins/${pinDetails.category}/category`);
         if(status === "ok") {
-          console.log('pinsSame: ', samePins);
-          setPins(samePins);
+          setPins(pins);
         }
       } catch (err) {
         setModal({ isModal: true, ...catchErrors(err) });
@@ -116,7 +115,7 @@ const PinDetailsContainer: FC<PinProps> = ({ user }) => {
           <h2 className="text-center font-bold text-2xl mt-8 mb-4">
             More like this
           </h2>
-          <MasonryLayout pins={pins} /> {/* the same pins from this category */}
+          <MasonryLayout pins={pins} user={userInfo} /> {/* the same pins from this category */}
         </>
       ) : (
         <Spinner message="Loading more pins..." />

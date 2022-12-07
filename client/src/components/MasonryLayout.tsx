@@ -12,14 +12,30 @@ const breakpointCols = {
   500: 1,
 }
 
-type MasontyProps = {
-  pins: any;
+type User = {
+  id: string;
+  name: string;
+  email: string;
+  picture?: string;
 }
 
-const MasonryLayout: FC<MasontyProps> = ({pins}) => {
+type Pin = {
+  id: string;
+  postedBy: User;
+  image: string;
+  category: string;
+  save?: User[];
+};
+
+type MasontyProps = {
+  pins: Pin[];
+  user: User;
+}
+
+const MasonryLayout: FC<MasontyProps> = ({pins, user}) => {
   return (
     <Masonry className="flex animate-slide-fwd" breakpointCols={breakpointCols}>
-      {pins?.map( (pin: any) => <Pin key={pin.id} pin={pin} />) }
+      {pins?.map( (pin: any) => <Pin key={pin.id} pin={pin} user={user} />) }
     </Masonry>
   )
 }

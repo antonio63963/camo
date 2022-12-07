@@ -16,7 +16,7 @@ const deleteButtonStyle = "bg-white opacity-70 hover:opacity-100  p-2 text-base 
 
 type User = {
   id: string;
-  emaile: string;
+  email: string;
   name: string;
   picture?: string;
 };
@@ -24,21 +24,21 @@ type DataPin = {
   id: string;
   postedBy: User;
   image: string;
-  destination: string;
+  category: string;
   save: User[];
 };
 
 type PinProps = {
   pin: DataPin;
+  user: User;
 };
 
 const Pin: FC<PinProps> = ({
-  pin: { id, postedBy, image, destination, save },
+  pin: { id, postedBy, image, save, category },
+  user,
 }) => {
   const navigate = useNavigate();
   const [postHovered, setPostHovered] = useState<boolean>(false);
-
-  const user = { id: "234234", name: "Dan", picture: "https://i.pinimg.com/236x/9e/de/e9/9edee90472347f63f07f3df024b637cb.jpg"}; //get user from global state
 
   const isAlreadySaved = !!save?.filter((item) => item.id === user.id)?.length;
 
@@ -97,16 +97,13 @@ const Pin: FC<PinProps> = ({
             </div>
             {/* 2 row  */}
             <div className="flex justify-between items-center gap-2 w-full">
-              {destination && (
-                <a
-                  href={destination}
-                  target="_blank"
-                  rel="noreferrer"
+              {category && (
+                <div
                   className="bg-white flex items-center gap-2 text-black font-bold p-2 px-4 rounded-full opacity-70 hover:opacity-100 hover:shadow-md"
                 >
                   <BsFillArrowUpRightCircleFill />
-                  {destination}
-                </a>
+                  {category}
+                </div>
               )}
               {postedBy?.id === user.id && (
                 <button
@@ -126,7 +123,7 @@ const Pin: FC<PinProps> = ({
       </div>
       {/* <img className="rounded-lg w-full" alt='pin-image' src={urlFor(image).width(250).url()} /> */}
       <Link to={`user-profile/${postedBy?.id}`} className="flex gap-2 mt-2 items-center mt-2">
-        <img className="w-8 h-8 rounded-full object-cover" src={postedBy.picture} alt="user-profile" />
+        <img className="w-8 h-8 rounded-full object-cover" src={postedBy.picture ?? postedBy.name.slice(0,2)} alt="user-profile" />
         <p className="font-semibold capitalize">{postedBy.name}</p>
       </Link>
     </div>
