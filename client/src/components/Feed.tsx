@@ -1,59 +1,76 @@
-import React, { FC, useState, useEffect, useCallback } from "react";
+import React, { FC, useState, useEffect, useCallback, useContext } from "react";
 import { useParams } from "react-router-dom";
-
 import axios from "axios";
+
+import storage from "services/storage.service";
 
 import MasonryLayout from "./MasonryLayout";
 import Spinner from "./Spinner";
 import Pin from "components/Pin";
+import catchErrors from "services/error.service";
+import { AppContext } from "context";
 
 type User = {
   id: string;
   name: string;
   email: string;
-  picture?: string;
+  picture: string;
 };
 
 type ResponsePins = {
   status: string;
   pins: PinData[];
 };
- 
+
 type PinData = {
   id: string;
   image: string;
   postedBy: User;
+  category: string;
 };
 
 const Feed: FC = () => {
+  const { setModal } = useContext(AppContext);
   const { categoryId } = useParams();
+  console.log(categoryId);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [pins, setPins] = useState<PinData[]>([]);
 
+  const user = storage.getUserInfo();
+
   const getPins = useCallback(async (categoryId?: string) => {
-    const path = categoryId ? `/pins/${categoryId}` : '/pins';
+    const path = categoryId ? `/pins/${categoryId}/category` : "/pins";
     try {
-      const { data: {status, pins} } =
-        await axios.get<ResponsePins>(path);
-      if (status === 'ok') {
+      const {
+        data: { status, pins },
+      } = await axios.get<ResponsePins>(path);
+      if (status === "ok") {
         setPins(pins);
+      } else {
+        setModal({
+          isModal: true,
+          title: "Error",
+          message: "Something has gone wrong on our side",
+        });
       }
-    } catch (err) {}
-  }, []);
+    } catch (err) {
+      catchErrors(err);
+    }
+  }, [setModal]);
 
   useEffect(() => {
     setIsLoading(false);
-console.log(categoryId)
-    // setPins([{id: '1', image: 'https://images.ctfassets.net/az3stxsro5h5/24L2UM6hV3m4csMvBzkHbj/9d4583541bdb29ae0c6a9ff2b60f1313/After.jpeg?w=2389&h=2986&q=50&fm=webp', postedBy: {id: '234234', name: 'Frank', email: 'frank@gmail.com', picture: 'https://i.pinimg.com/236x/9e/de/e9/9edee90472347f63f07f3df024b637cb.jpg', }}])
+    console.log(categoryId);
     if (categoryId) {
-      getPins(categoryId)
+      getPins(categoryId);
     } else {
       getPins();
     }
   }, [categoryId, getPins]);
 
   if (isLoading) return <Spinner message="New idease are comming..." />;
-  return <div>{pins && <MasonryLayout pins={pins} />}</div>;
+  if (!pins?.length) return <h2>No pins avalible</h2>;
+  return <div>{pins && <MasonryLayout pins={pins} user={user} />}</div>;
 };
 
 export default Feed;
