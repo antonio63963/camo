@@ -58,86 +58,29 @@ class PinService {
       .populate({ path: "comments", populate: { path: "user" } }); // fields
   }
 
-  async checkIsListExist(owner: string, title: string) {
-    return await PinModel.exists({ owner, title });
-  }
-
-  async findListByTitle(owner: string, title: string) {
-    return await PinModel.findOne({ owner, title });
-  }
-
-  async getListsForStudent(userId: string, listIds: string[]) {
-    const lists = await PinModel.find(
-      {
-        $and: [{ _id: listIds }],
-        isPublic: true,
-        students: {
-          $elemMatch: {
-            userId,
-            isDisabled: false,
-          },
-        },
-      },
-      { id: true, title: true, materials: true }
-    );
-    // return lists.map(list => {
-    //   list.materialsCount = list.materials.length;
-    //   delete list.materials;
-    //   return list;
-    // });
-  }
-
-  async getListsForTeacher(userId: string) {
-    const lists = await PinModel.find(
-      { owner: userId },
-      { title: true, isPublic: true, materials: true }
-    );
-    // return lists.map(list => {
-    //   list.materialsCount = list.materials.length;
-    //   delete list.materials;
-    //   return list;
-    // });
-  }
-
-  async findMaterialByUrl(listId: string, url: string) {
-    return await PinModel.findOne({
-      _id: listId,
-      materials: {
-        $elemMatch: { url },
-      },
-    });
-  }
-
-  async findMaterialByTitle(listId: string, title: string) {
-    return await PinModel.findOne({
-      _id: listId,
-      materials: {
-        $elemMatch: { title },
-      },
-    });
-  }
-
-  // async editMaterial(listId: string, userId: string, material: Material) {
-  //   return await PinModel.findOneAndUpdate(
-  //     { _id: listId, owner: userId },
-  //     { $set: { "materials.$[elem]": material } },
-  //     {
-  //       new: true,
-  //       rawResult: true,
-  //       arrayFilters: [{ "elem._id": material.materialId }],
-  //     }
-  //   ).select({ materials: { $elemMatch: { title: material.title } } });
-  // }
-
-  async removeMaterial(listId: string, userId: string, deletedId: string) {
+  async addLike(pinId: string, uid: string) {
     return await PinModel.findOneAndUpdate(
-      { _id: listId, owner: userId },
-      {
-        $pull: { materials: { _id: deletedId } },
-        $inc: { materialsCount: -1 },
-      },
+      { _id: pinId },
+      { $push: { likes: uid } }
+    ).select("_id");
+  }
+  async deleteLike(pinId: string, uid: string) {
+    return await PinModel.findOneAndUpdate(
+      { _id: pinId },
+      { $pullAll: { likes: uid } },
       { rawResult: true }
-    ).select({ materials: { $elemMatch: { _id: deletedId } } });
+    ).select("_id");
+  }
+
+  async getLikedPins(uid: string) {
+    return await PinModel.find(
+      {
+        likes: { $elemMatch: uid },
+      },
+      { comments: false, about: false }
+    )
+      .populate("postedBy")
+      .limit(30);
   }
 }
 
