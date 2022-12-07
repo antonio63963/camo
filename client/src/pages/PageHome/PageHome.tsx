@@ -6,6 +6,7 @@ import { AiFillCloseCircle } from "react-icons/ai";
 import { Sidebar, UserProfile } from "../../components";
 import { PinsContainer } from "containers";
 import logo from "assets/logo.png";
+import camoLogo from 'assets/camoLogo.png'
 
 import { User } from "./PageHome.type";
 
@@ -38,7 +39,7 @@ const PageHome: FC = () => {
             onClick={() => setToggelSidebar(true)}
           />
           <Link to="/">
-            <img src={logo} alt="logo" className="w-28" />
+            <img src={camoLogo} alt="logo" className="w-28" />
           </Link>
           {userInfo?.id && (
             <Link to={`user-profile/${userInfo?.id}`}>
