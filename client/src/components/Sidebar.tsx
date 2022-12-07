@@ -4,19 +4,14 @@ import { RiHomeFill } from "react-icons/ri";
 import { IoIosArrowForward } from "react-icons/io";
 
 import logo from "../assets/logo.png";
+import camoLogo from "../assets/camoLogo.png";
+
+import { categories } from "utils/data";
 
 const isNotActiveStyle =
   "flex items-center px-5 gap-3 text-gray-500 hover:text-black transition-all duration-200 ease-in-out capitalize";
 const isActiveStyle =
   "flex items-center px-5 gap-3 font-extrabold border-r-2 border-black text-gray-500 transition-all duration-200 ease-in-out capitalize";
-const categories = [
-  { name: "Animals" },
-  { name: "Wallspaper" },
-  { name: "Photography" },
-  { name: "Gaming" },
-  { name: "Coding" },
-  { name: "Other" },
-];
 
 type User = {
   id: string;
@@ -39,7 +34,7 @@ const Sidebar: FC<SidebarProps> = ({ user, onCloseSidebar }) => {
           to="/"
           onClick={onCloseSidebar}
         >
-          <img src={logo} alt="logo" className="w-full" />
+          <img src={camoLogo} alt="logo" className="w-full" />
         </Link>
         <div className="flex flex-col gap-5">
           <NavLink
@@ -65,6 +60,7 @@ const Sidebar: FC<SidebarProps> = ({ user, onCloseSidebar }) => {
                 }
                 onClick={onCloseSidebar}
               >
+                <img src={cat.image} className="w-8 h-8 rounded-full shadow-sm" alt="category" />
                 {cat.name}
               </NavLink>
             );
