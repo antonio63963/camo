@@ -8,13 +8,13 @@ class PinController {
   async index(req: Request, res: Response, next: NextFunction) {
     try {
       const pins = await pinService.getPins();
-      if(pins) {
-        res.json({status: 'ok', pins})
-      };
+      if (pins) {
+        res.json({ status: "ok", pins });
+      }
     } catch (err) {
       next(err);
     }
-  };
+  }
 
   async create(req: Request, res: Response, next: NextFunction) {
     const { pin } = res.locals;
@@ -26,39 +26,37 @@ class PinController {
     } catch (err) {
       next(err);
     }
-  };
+  }
 
   async show(req: Request, res: Response, next: NextFunction) {
     try {
       const pinId = req.params.id;
-      const pinData = await pinService.getPinById(pinId); 
-      if(pinData) {
-        res.json({ status: 'ok', pinData });
+      const pinData = await pinService.getPinById(pinId);
+      if (pinData) {
+        res.json({ status: "ok", pinData });
       } else {
         throw ApiError.NotFound();
       }
     } catch (err) {
-      console.log('ERRR SHOW: ', err)
+      console.log("ERRR SHOW: ", err);
       next(err);
     }
-  };
+  }
 
   async addComment(req: Request, res: Response, next: NextFunction) {
     const pinId = req.params.id;
     const comment = req.body;
     try {
-      const comments = await pinService.addNewComment({...comment, pinId});
+      const comments = await pinService.addNewComment({ ...comment, pinId });
       res.json({
-        status: 'ok',
+        status: "ok",
         comments,
       });
     } catch (err) {
-      console.log('ERRR ADD COMMENT: ', err)
+      console.log("ERRR ADD COMMENT: ", err);
       next(err);
     }
-  };
-
-  
+  }
 
   async edit(req: Request, res: Response, next: NextFunction) {
     try {
@@ -77,38 +75,103 @@ class PinController {
     } catch (err) {
       next(err);
     }
-  };
+  }
 
   async delete(req: Request, res: Response, next: NextFunction) {
     const { userId } = res.locals.auth;
     const listId = req.params.id;
     try {
       const { id } = await pinService.removePin(listId, userId);
-      if(id) {
+      if (id) {
         setTimeout(() => {
           res.json({
             deletedId: id,
           });
-
-        }, 5000)
-      } else {
-        throw ApiError.ServerError();
-      };
-    } catch (err) {
-      next(err);
-    };
-  };
-
-  async samePins(req: Request, res: Response, next: NextFunction) {
-    try {
-      const { category } = req.params;
-    const samePins = await pinService.getSamePins(category);
-      if(samePins) {
-        res.json({ status: 'ok', samePins});
+        }, 5000);
       } else {
         throw ApiError.ServerError();
       }
     } catch (err) {
+      next(err);
+    }
+  }
+
+  async samePins(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { category } = req.params;
+      console.log("Category: ", category);
+      const pins = await pinService.getSamePins(category);
+      console.log("samePins: ", pins);
+      if (pins) {
+        res.json({ status: "ok", pins });
+      } else {
+        throw ApiError.ServerError();
+      }
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  async like(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { id } = req.params;
+      const uid = res.locals.auth.id;
+      const docId = await pinService.addLike(id, uid);
+      console.log("Liked Pin Id: " + docId);
+      if (docId) {
+        res.json({ status: "ok", isLiked: true });
+      } else {
+        throw ApiError.ServerError();
+      };
+    } catch (err) {
+      console.log('Like Errror: ', err)
+      next(err);
+    }
+  }
+  async deleteLike(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { id } = req.params;
+      const uid = res.locals.auth.id;
+      const docId = await pinService.deleteLike(id, uid);
+      console.log("deleteLiked Pin Id: " + docId);
+      if (docId) {
+        res.json({ status: "ok", isLiked: false });
+      } else {
+        throw ApiError.ServerError();
+      };
+    } catch (err) {
+      console.log('Delete Like Errror: ', err)
+      next(err);
+    }
+  }
+
+  async userPins(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { uid } = res.locals.auth;
+      const pins = await pinService.getUserPins(uid);
+      if (pins) {
+        res.json({ status: "ok", pins });
+      } else {
+        throw ApiError.ServerError();
+      }
+    } catch (err) {
+      console.log("UserPINS ERR: ", err);
+      next(err);
+    }
+  }
+
+  async likedPins(req: Request, res: Response, next: NextFunction) {
+    try {
+      const uid = res.locals.auth.id;
+      const pins = await pinService.getLikedPins(uid);
+      console.log("Liked pins: ", pins);
+      if (pins) {
+        res.json({ status: "ok", pins });
+      } else {
+        throw ApiError.ServerError();
+      }
+    } catch (err) {
+      console.log("LikedPINS ERR: ", err);
       next(err);
     }
   }

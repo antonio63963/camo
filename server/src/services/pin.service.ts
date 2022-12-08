@@ -82,6 +82,13 @@ class PinService {
       .populate("postedBy")
       .limit(30);
   }
+
+  async getUserPins(uid: string) {
+    return await PinModel.find(
+      { postedBy: uid },
+      { comments: false, about: false }
+    ).populate("postedBy");
+  }
 }
 
 export default new PinService();

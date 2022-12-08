@@ -29,7 +29,19 @@ const generalSchema = new Schema<General>(
       required: true,
     },
     // comments: [],
-    comments: [{ type: Schema.Types.ObjectId, ref: "comment" }],
+    comments: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "comment",
+      },
+    ],
+    likes: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "user",
+        required: true,
+      },
+    ],
   },
   { timestamps: true }
 );

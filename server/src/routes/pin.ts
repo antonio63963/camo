@@ -13,8 +13,10 @@ const pinRouter = express.Router();
 
 // pinRouter.get("/students", PinController.students);
 pinRouter.get("/", PinController.index);
+pinRouter.get("/userPins", PinController.userPins);
+pinRouter.get("/likedPins", PinController.likedPins);
 pinRouter.get("/:id", PinController.show);
-pinRouter.get("/:category/:id", PinController.samePins);
+pinRouter.get("/:category/category", PinController.samePins);
 pinRouter.post("/:id/comments", PinController.addComment);
 pinRouter.post(
   "/",
@@ -26,6 +28,16 @@ pinRouter.post(
 );
 
 pinRouter.put(
+  "/:id/like",
+  PinController.like
+);
+
+pinRouter.delete(
+  "/:id/like",
+  PinController.deleteLike
+);
+
+pinRouter.put(
   "/",
   // checkIsTeacher,
   // listTitleSchema,
@@ -33,31 +45,11 @@ pinRouter.put(
   PinController.edit
 );
 
-pinRouter.delete(
-  "/:id",
-  checkIsTeacher,
-  PinController.delete
-);
-
-pinRouter.post(
-  "/:id/materials",
-  checkIsTeacher,
-  materialTitleSchema,
-  materialUrlSchema,
-  validateSchema,
-  PinController.create
-);
-
-pinRouter.put(
-  "/:id/materials",
-  checkIsTeacher,
-  // PinController.editMaterial
-);
 
 pinRouter.delete(
-  '/:id/materials/',
+  '/:id/save/',
   checkIsTeacher,
-  // PinController.deleteMaterial
+  PinController.deleteLike,
 )
 
 export default pinRouter;

@@ -8,6 +8,7 @@ type General = {
   about: string;
   category: string;
   comments: ObjectId[];
+  likes: ObjectId[];
 };
 
 export type {
