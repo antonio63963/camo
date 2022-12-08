@@ -30,7 +30,6 @@ class AxiosService {
           jwtService.destroyTokens();
           this.setAuthorizationHeader();
           history.push(routes.AUTH_SIGNIN);
-          console.log('Hello')
         }
         if (
           error.response.status === 404 &&
