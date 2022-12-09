@@ -13,6 +13,7 @@ import SaveButton from "components/SaveButton";
 // categories [{name: 'animals', image: ''}]
 
 import { CreatePinProps } from "./CreatePinContainer.type";
+import catchErrors from "services/error.service";
 
 const CreatePin: FC<CreatePinProps> = ({ user }) => {
   const [title, setTitle] = useState<string>("");
@@ -32,7 +33,7 @@ const CreatePin: FC<CreatePinProps> = ({ user }) => {
 
   const navigate = useNavigate();
 
-  const savePin = useCallback(async () => {
+  const validationFields = useCallback(() => {
     const titleValidationResult = validation
       .string(title)
       .isEmpty()
@@ -52,15 +53,32 @@ const CreatePin: FC<CreatePinProps> = ({ user }) => {
           .fileFormat("png", "jpg", "jpeg")
           .result()
       : { isValid: true, message: "" };
+    const categoryValidationResult = validation
+      .string(category)
+      .notEqual("other")
+      .result();
 
     setErrorsFields({
       title: titleValidationResult?.message,
       about: aboutValidationResult?.message,
       image: imageValidationResult?.message,
-      category: validation.string(category).notEqual("other").result()
-        .message,
+      category: categoryValidationResult?.message,
     });
 
+    if (
+      titleValidationResult.isValid &&
+      aboutValidationResult.isValid &&
+      imageValidationResult.isValid &&
+      categoryValidationResult.isValid
+    ) {
+      return true;
+    } else {
+      return false;
+    }
+  }, [about, category, imageAsset, imageLink, title]);
+
+  const savePin = useCallback(async () => {
+    if (!validationFields()) return;
     const pinData = {
       title,
       about,
@@ -70,13 +88,17 @@ const CreatePin: FC<CreatePinProps> = ({ user }) => {
       postedBy: user.id,
     };
 
-    const {
-      data: { pin },
-    } = await axios.post("/pins", pinData);
-    if (pin) {
-      console.log(pin);
+    try {
+      const {
+        data: { pin },
+      } = await axios.post("/pins", pinData);
+      if (pin) {
+        navigate("/");
+      }
+    } catch (err) {
+      catchErrors(err);
     }
-  }, [about, category, imageAsset, imageLink, title, user.id]);
+  }, [about, category, imageAsset, imageLink, navigate, title, user.id, validationFields]);
 
   useEffect(() => {
     console.log(category);
