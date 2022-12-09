@@ -16,6 +16,7 @@ type InputProps = {
   about: string;
   setCategory: (category: string) => void;
   setAbout: (about: string) => void;
+  errorMessages: {title: string, category: string, about: string}
 };
 
 
@@ -26,6 +27,7 @@ const CreatePinInputs: FC<InputProps> = ({
   about,
   setCategory,
   setAbout,
+  errorMessages,
 }) => {
   return (
     <>
@@ -36,6 +38,7 @@ const CreatePinInputs: FC<InputProps> = ({
           placeholder="Add your title"
           className="outline-none text-base sm:text-lg text-bold border-b-2 border-gray-200 p-2"
         />
+        {errorMessages.title && <p className="text-red-500 text-basic text-center mt-2">{errorMessages.title}</p>}
       </div>
       {user && (
         <div className="flex gap-2 my-2 items-center gb-white rounded-lg">
@@ -54,6 +57,8 @@ const CreatePinInputs: FC<InputProps> = ({
         onChange={(e) => setAbout(e.target.value)}
         className="outline-none text-base sm:text-lg border-b-2 border-gray-200 p-2 my-2"
       />
+      {errorMessages.about && <p className="text-red-500 text-basic text-center mt-2">{errorMessages.about}</p>}
+
       <div className="flex flex-col">
         <div>
           <p className="mb-2 mt-3 font-semibold text-lg sm:text-xl">
@@ -76,6 +81,7 @@ const CreatePinInputs: FC<InputProps> = ({
               </option>
             ))}
           </select>
+          {errorMessages.category && <p className="text-red-500 text-basic text-center mt-2">{errorMessages.category}</p>}
         </div>
       </div>
     </>

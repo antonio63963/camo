@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useState } from "react";
+import React, { FC, useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import validation from "services/validation.service";
@@ -26,46 +26,65 @@ const CreatePin: FC<CreatePinProps> = ({ user }) => {
   const [errorsFields, setErrorsFields] = useState({
     title: "",
     about: "",
+    image: "",
+    category: "",
   });
 
   const navigate = useNavigate();
 
   const savePin = useCallback(async () => {
-    if (title && about && (imageAsset || imageLink) && category) {
-      const titleValidationResult = validation
-        .string(title)
-        .isEmpty()
-        ?.minLength(2)
-        ?.maxLength(30)
-        ?.result();
-      const aboutValidationResult = validation
-        .string(about)
-        .isEmpty()
-        ?.minLength(2)
-        ?.maxLength(200)
-        ?.result();
-      setErrorsFields({
-        title: titleValidationResult?.message,
-        about: aboutValidationResult?.message,
-      });
-      const doc = {
-        title,
-        about,
-        category,
-        imageAsset,
-        imageLink,
-        postedBy: user.id,
-      };
-      const {
-        data: { pin },
-      } = await axios.post("/pins", doc);
-      if (pin) {
-        console.log(pin);
-      }
-    } else {
-      setFields(true);
+    const titleValidationResult = validation
+      .string(title)
+      .isEmpty()
+      ?.minLength(2)
+      ?.maxLength(30)
+      ?.result();
+    const aboutValidationResult = validation
+      .string(about)
+      .isEmpty()
+      ?.minLength(2)
+      ?.maxLength(200)
+      ?.result();
+    const imageValidationResult = !imageAsset
+      ? validation
+          .string(imageLink)
+          .url()
+          .fileFormat("png", "jpg", "jpeg")
+          .result()
+      : { isValid: true, message: "" };
+
+    setErrorsFields({
+      title: titleValidationResult?.message,
+      about: aboutValidationResult?.message,
+      image: imageValidationResult?.message,
+      category: validation.string(category).notEqual("other").result()
+        .message,
+    });
+
+    const pinData = {
+      title,
+      about,
+      category,
+      imageAsset,
+      imageLink,
+      postedBy: user.id,
+    };
+
+    const {
+      data: { pin },
+    } = await axios.post("/pins", pinData);
+    if (pin) {
+      console.log(pin);
     }
   }, [about, category, imageAsset, imageLink, title, user.id]);
+
+  useEffect(() => {
+    console.log(category);
+    if (title) errorsFields.title = "";
+    if (about) errorsFields.about = "";
+    if (category) errorsFields.category = "";
+    if (imageLink || imageAsset) errorsFields.image = "";
+  }, [title, about, category, imageAsset, imageLink, errorsFields]);
 
   return (
     <div className="flex flex-col justify-center items-center mt-5 lg:h-4/5">
@@ -80,6 +99,7 @@ const CreatePin: FC<CreatePinProps> = ({ user }) => {
           setImageAsset={setImageAsset}
           imageLink={imageLink}
           setImageLink={setImageLink}
+          errorMessage={errorsFields.image}
         />
         <CreatePinInputs
           title={title}
@@ -88,6 +108,7 @@ const CreatePin: FC<CreatePinProps> = ({ user }) => {
           about={about}
           setAbout={setAbout}
           setCategory={setCategory}
+          errorMessages={errorsFields}
         />
         <SaveButton onButtonClick={savePin} />
       </div>

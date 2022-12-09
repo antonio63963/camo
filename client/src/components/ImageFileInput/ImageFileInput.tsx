@@ -11,6 +11,7 @@ type InputProps = {
   uploadImage: (e: React.ChangeEvent<HTMLInputElement>) => void;
   imageLink: string;
   setImageLink: (data: string) => void;
+  errorMessage: string;
 };
 
 const ImageFileInput: FC<InputProps> = ({
@@ -19,6 +20,7 @@ const ImageFileInput: FC<InputProps> = ({
   uploadImage,
   imageLink,
   setImageLink,
+  errorMessage,
 }) => {
   return (
     <>
@@ -44,6 +46,7 @@ const ImageFileInput: FC<InputProps> = ({
           </label>
 
           <label>
+            {errorMessage && <p className="text-red-500 text-basic text-center mt-2">{errorMessage}</p>}
             <h3 className="mt-10 text-center font-bold text-greyColor">OR</h3>
             <div className="flex w-full justify-between mt-2">
               <input

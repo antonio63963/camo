@@ -10,6 +10,7 @@ const ImageFileInputContainer: FC<InputProps> = ({
   imageAsset,
   imageLink,
   setImageLink,
+  errorMessage,
 }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [wrongImageType, setWrongImageType] = useState<boolean>(false);
@@ -47,6 +48,7 @@ const ImageFileInputContainer: FC<InputProps> = ({
           uploadImage={uploadImage}
           imageLink={imageLink}
           setImageLink={setImageLink}
+          errorMessage={errorMessage}
         />
       </div>
     </div>
