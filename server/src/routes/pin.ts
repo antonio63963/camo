@@ -47,9 +47,8 @@ pinRouter.put(
 
 
 pinRouter.delete(
-  '/:id/save/',
-  checkIsTeacher,
-  PinController.deleteLike,
+  '/:id/',
+  PinController.delete,
 )
 
 export default pinRouter;

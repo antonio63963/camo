@@ -71,45 +71,41 @@ class PinController {
         });
       } else {
         throw ApiError.ServerError();
-      }
+      };
     } catch (err) {
       next(err);
-    }
+    };
   }
 
   async delete(req: Request, res: Response, next: NextFunction) {
-    const { userId } = res.locals.auth;
-    const listId = req.params.id;
+    const { uid } = res.locals.auth;
+    const pinId = req.params.id;
     try {
-      const { id } = await pinService.removePin(listId, userId);
-      if (id) {
-        setTimeout(() => {
-          res.json({
-            deletedId: id,
-          });
-        }, 5000);
+      const _id = await pinService.removePin(pinId, uid);
+      if (_id) {
+        res.json({
+          status: 'ok',
+        });
       } else {
         throw ApiError.ServerError();
-      }
+      };
     } catch (err) {
       next(err);
-    }
+    };
   }
 
   async samePins(req: Request, res: Response, next: NextFunction) {
     try {
       const { category } = req.params;
-      console.log("Category: ", category);
       const pins = await pinService.getSamePins(category);
-      console.log("samePins: ", pins);
       if (pins) {
         res.json({ status: "ok", pins });
       } else {
         throw ApiError.ServerError();
-      }
+      };
     } catch (err) {
       next(err);
-    }
+    };
   }
 
   async like(req: Request, res: Response, next: NextFunction) {
@@ -122,9 +118,9 @@ class PinController {
         res.json({ status: "ok", isLiked: true });
       } else {
         throw ApiError.ServerError();
-      };
+      }
     } catch (err) {
-      console.log('Like Errror: ', err)
+      console.log("Like Errror: ", err);
       next(err);
     }
   }
@@ -138,9 +134,9 @@ class PinController {
         res.json({ status: "ok", isLiked: false });
       } else {
         throw ApiError.ServerError();
-      };
+      }
     } catch (err) {
-      console.log('Delete Like Errror: ', err)
+      console.log("Delete Like Errror: ", err);
       next(err);
     }
   }

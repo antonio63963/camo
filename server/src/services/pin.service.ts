@@ -47,8 +47,7 @@ class PinService {
 
   async removePin(pinId: string, postedBy: string) {
     return await PinModel.findOneAndDelete(
-      { _id: pinId, postedBy },
-      { _id: true }
+      { _id: pinId, postedBy }
     );
   }
 
