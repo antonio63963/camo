@@ -1,4 +1,3 @@
-
 class Validation {
   string(str: string) {
     let isValid = true;
@@ -26,6 +25,14 @@ class Validation {
         }
         isValid = str.length <= max;
         if (!isValid) message = `Min length would  be less than ${max}`;
+        return this;
+      },
+      notEqual(...args: any[]) {
+        if (!isValid) {
+          return this;
+        }
+        isValid = !args.filter((arg) => arg === str).length;
+        if (!isValid) message = "Not valid value";
         return this;
       },
       email() {
