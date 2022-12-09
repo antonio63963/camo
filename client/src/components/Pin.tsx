@@ -34,11 +34,13 @@ type DataPin = {
 type PinProps = {
   pin: DataPin;
   user: User;
+  deletePinFromArray: (data: string) => void;
 };
 
 const Pin: FC<PinProps> = ({
   pin: { id, postedBy, image, likes, category },
   user,
+  deletePinFromArray,
 }) => {
   const { setModal } = useContext(AppContext);
   const navigate = useNavigate();
@@ -58,7 +60,7 @@ const Pin: FC<PinProps> = ({
         );
         if (status === "ok") {
           setIsAlreadyliked(isLiked);
-          setLikesCount(isLiked ? likesCount + 1 : likesCount -1);
+          setLikesCount(isLiked ? likesCount + 1 : likesCount - 1);
         } else {
           setModal({
             isModal: true,
@@ -70,12 +72,32 @@ const Pin: FC<PinProps> = ({
         catchErrors(err);
       }
     },
-    [isAlreadyliked, setModal]
+    [isAlreadyliked, likesCount, setModal]
   );
 
-  function deletePin(id: string) {
-    console.log("Delete", id);
-  }
+  const deletePin = useCallback(
+    async (id: string) => {
+      try {
+        const {
+          data: { status },
+        } = await axios.delete(`/pins/${id}`);
+        if (status === "ok") {
+          deletePinFromArray(id);
+          // navigate("/", { replace: true });
+        } else {
+          setModal({
+            isModal: true,
+            title: "Error",
+            message:
+              "Something has gone wrong with dlelete the pin on our side!",
+          });
+        }
+      } catch (err) {
+        catchErrors(err);
+      }
+    },
+    [navigate, setModal]
+  );
 
   return (
     // w-max

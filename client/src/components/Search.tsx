@@ -1,4 +1,4 @@
-import React, { FC, useState, useEffect } from "react";
+import React, { FC, useState, useEffect, useCallback } from "react";
 
 import { MasonryLayout, Spinner } from "components";
 
@@ -29,6 +29,13 @@ const Search: FC<SearchProps> = ({ searchTerm, setSearchTerm, user }) => {
   //  1.get pins from pins container if reload this page get pins from server. 
   //  2 set timeOut on input change to avoid often queries
 
+  const deletePinFromArray = useCallback(
+    (pinId: string) => {
+      setPins([...pins].filter((pin) => pin.id !== pinId));
+    },
+    [pins]
+  );
+
 useEffect(() => {
   if(searchTerm) {
     setIsLoading(true);
@@ -38,7 +45,7 @@ useEffect(() => {
   return (
     <div>
       {isLoading && <Spinner message="Searching for Pins..." />}
-      {!pins.length && <MasonryLayout pins={pins} user={user} />}
+      {!pins.length && <MasonryLayout pins={pins} user={user} deletePinFromArray={deletePinFromArray} />}
       {pins.length > 0 && searchTerm !== '' && !isLoading && 
         <div className="mt-10 text-center text-xl">No Pins found...</div>
       }

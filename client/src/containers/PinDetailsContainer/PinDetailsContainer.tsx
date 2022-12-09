@@ -20,7 +20,7 @@ const PinDetailsContainer: FC<PinProps> = ({ user }) => {
 
   const userInfo = storage.getUser();
 
-  const [pins, setPins] = useState(null);
+  const [pins, setPins] = useState<PinDetailsProps[]>([]);
   const [pinDetails, setPinDetails] = useState<PinDetailsProps | null>(null);
   const [comment, setComment] = useState<string>("");
   const [errorComment, setErrorComment] = useState<string | null>(null);
@@ -37,20 +37,29 @@ const PinDetailsContainer: FC<PinProps> = ({ user }) => {
         setPinDetails(pinData);
       }
     } catch (err) {}
-  };
+  }
 
-  const getSamePins = useCallback(async() => {
-    if(pinDetails && pinDetails.category) {
+  const getSamePins = useCallback(async () => {
+    if (pinDetails && pinDetails.category) {
       try {
-        const {data: {status, pins}} = await axios.get(`/pins/${pinDetails.category}/category`);
-        if(status === "ok") {
+        const {
+          data: { status, pins },
+        } = await axios.get(`/pins/${pinDetails.category}/category`);
+        if (status === "ok") {
           setPins(pins);
         }
       } catch (err) {
         setModal({ isModal: true, ...catchErrors(err) });
-      };
+      }
     }
   }, [pinDetails, setModal]);
+
+  const deletePinFromArray = useCallback(
+    (pinId: string) => {
+      setPins([...pins].filter((pin) => pin.id !== pinId));
+    },
+    [pins]
+  );
 
   const addComment = useCallback(async () => {
     const messageResult = validation
@@ -95,19 +104,23 @@ const PinDetailsContainer: FC<PinProps> = ({ user }) => {
   }, [pinId]);
 
   useEffect(() => {
-    getSamePins()
-  }, [pinDetails])
+    getSamePins();
+  }, [pinDetails]);
 
   return (
     <>
       {!pinDetails ? (
         <Spinner message="Loading pin..." />
       ) : (
-        <PinDetails user={userInfo} pin={pinDetails} comment={comment}
-        setComment={setComment}
-        addComment={addComment}
-        isAddComment={isAddComment}
-        errorComment={errorComment}/>
+        <PinDetails
+          user={userInfo}
+          pin={pinDetails}
+          comment={comment}
+          setComment={setComment}
+          addComment={addComment}
+          isAddComment={isAddComment}
+          errorComment={errorComment}
+        />
       )}
 
       {pins ? (
@@ -115,7 +128,12 @@ const PinDetailsContainer: FC<PinProps> = ({ user }) => {
           <h2 className="text-center font-bold text-2xl mt-8 mb-4">
             More like this
           </h2>
-          <MasonryLayout pins={pins} user={userInfo} /> {/* the same pins from this category */}
+          <MasonryLayout
+            pins={pins}
+            user={userInfo}
+            deletePinFromArray={deletePinFromArray}
+          />{" "}
+          {/* the same pins from this category */}
         </>
       ) : (
         <Spinner message="Loading more pins..." />

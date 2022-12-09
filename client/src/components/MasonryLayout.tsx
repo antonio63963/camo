@@ -28,14 +28,15 @@ type Pin = {
 };
 
 type MasontyProps = {
+  deletePinFromArray: (data: string) => void;
   pins: Pin[];
   user: User;
 }
 
-const MasonryLayout: FC<MasontyProps> = ({pins, user}) => {
+const MasonryLayout: FC<MasontyProps> = ({pins, user, deletePinFromArray}) => {
   return (
     <Masonry className="flex animate-slide-fwd" breakpointCols={breakpointCols}>
-      {pins?.map( (pin: any) => <Pin key={pin.id} pin={pin} user={user} />) }
+      {pins?.map( (pin: any) => <Pin key={pin.id} pin={pin} user={user} deletePinFromArray={deletePinFromArray} />) }
     </Masonry>
   )
 }

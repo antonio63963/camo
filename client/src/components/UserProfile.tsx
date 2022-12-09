@@ -1,15 +1,18 @@
 // rafce
 
-import React, { FC, useState, useEffect } from "react";
+import { FC, useState, useEffect, useCallback, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { AiOutlineLogout } from "react-icons/ai";
 
+import { AppContext } from "context";
 import { MasonryLayout, Spinner } from "components";
 
 import { googleLogout } from "@react-oauth/google";
 
-
 import storage from "services/storage.service";
+import catchErrors from "services/error.service";
+
+import axios from "axios";
 
 type User = {
   id: string;
@@ -24,6 +27,10 @@ type Pin = {
   category: string;
   save: User[];
 };
+enum PinGroups {
+  created = "created",
+  liked = "liked",
+}
 const randomImage =
   "https://source.unsplash.com/1600x900/?nature,photography,technology";
 const activeBtnStyles =
@@ -31,11 +38,12 @@ const activeBtnStyles =
 const notActiveBtnStyles =
   "bg-primary mr-4 text-black font-bold p-2 rounded-full w-20 outline-none";
 
-const UserProfile: FC<Pin[]> = () => {
-  const user = storage.getUserInfo();
-  // const [user, setUser] = useState(1);
+const UserProfile: FC = () => {
+  const navigate = useNavigate();
+  const { setModal } = useContext(AppContext);
+  const user: User = storage.getUserInfo();
   const [pins, setPins] = useState<Pin[]>([]);
-  const [text, setText] = useState("Created");
+  const [text, setText] = useState<PinGroups>(PinGroups.created);
   const [activeBtn, setActiveBtn] = useState("created");
 
   const logout = () => {
@@ -44,16 +52,43 @@ const UserProfile: FC<Pin[]> = () => {
     navigate("/auth/login");
   };
 
-  const navigate = useNavigate();
-  const userId = useParams();
+  const getMyPins = useCallback(
+    async (pinGroup: PinGroups) => {
+      try {
+        const {
+          data: { status, pins },
+        } = await axios.get<{ status: string; pins: Pin[] }>(
+          `/pins/${pinGroup === PinGroups.created ? "user" : "liked"}Pins`
+        );
+        if (status === "ok") {
+          console.log(pins);
+          setPins(pins);
+        } else {
+          setModal({
+            isModal: true,
+            title: "Error",
+            message: `Downloading ${
+              pinGroup === PinGroups.created ? "your" : "liked"
+            } pins is failed!`,
+          });
+        }
+      } catch (err) {
+        catchErrors(err);
+      }
+    },
+    [setModal]
+  );
+
+  const deletePinFromArray = useCallback(
+    (pinId: string) => {
+      setPins([...pins].filter((pin) => pin.id !== pinId));
+    },
+    [pins]
+  );
 
   useEffect(() => {
-    if (text === "Created") {
-    } else if (text === "Saved") {
-    } else {
-      return;
-    }
-  }, []);
+    getMyPins(text);
+  }, [getMyPins, text]);
 
   if (!user) {
     return <Spinner message="Loading profile..." />;
@@ -83,7 +118,7 @@ const UserProfile: FC<Pin[]> = () => {
           <div className="text-center mb-7">
             <button
               onClick={(e) => {
-                setText("Created");
+                setText(PinGroups.created);
                 setActiveBtn("created");
               }}
               className={`${
@@ -94,26 +129,32 @@ const UserProfile: FC<Pin[]> = () => {
             </button>
             <button
               onClick={(e) => {
-                setText("Saved");
-                setActiveBtn("saved");
+                setText(PinGroups.liked);
+                setActiveBtn("liked");
               }}
               className={`${
-                activeBtn === "saved" ? activeBtnStyles : notActiveBtnStyles
+                activeBtn === "liked" ? activeBtnStyles : notActiveBtnStyles
               }`}
             >
-              Saved
+              Liked
             </button>
           </div>
           {/* pins */}
           {pins?.length > 0 ? (
             <div>
               <div className="px-2">
-                <MasonryLayout pins={pins} user={user}/>
+                <MasonryLayout
+                  pins={pins}
+                  user={user}
+                  deletePinFromArray={deletePinFromArray}
+                />
               </div>
             </div>
-          ) : <div className="flex justify-center items-center font-bold w-full tx-xl mt-2">
-            No Pins Found!
-            </div>}
+          ) : (
+            <div className="flex justify-center items-center font-bold w-full tx-xl mt-2">
+              No Pins Found!
+            </div>
+          )}
         </div>
       </div>
     </div>

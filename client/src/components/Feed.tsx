@@ -32,31 +32,40 @@ type PinData = {
 const Feed: FC = () => {
   const { setModal } = useContext(AppContext);
   const { categoryId } = useParams();
-  console.log(categoryId);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [pins, setPins] = useState<PinData[]>([]);
 
   const user = storage.getUserInfo();
 
-  const getPins = useCallback(async (categoryId?: string) => {
-    const path = categoryId ? `/pins/${categoryId}/category` : "/pins";
-    try {
-      const {
-        data: { status, pins },
-      } = await axios.get<ResponsePins>(path);
-      if (status === "ok") {
-        setPins(pins);
-      } else {
-        setModal({
-          isModal: true,
-          title: "Error",
-          message: "Something has gone wrong on our side",
-        });
+  const deletePinFromArray = useCallback(
+    (pinId: string) => {
+      setPins([...pins].filter((pin) => pin.id !== pinId));
+    },
+    [pins]
+  );
+
+  const getPins = useCallback(
+    async (categoryId?: string) => {
+      const path = categoryId ? `/pins/${categoryId}/category` : "/pins";
+      try {
+        const {
+          data: { status, pins },
+        } = await axios.get<ResponsePins>(path);
+        if (status === "ok") {
+          setPins(pins);
+        } else {
+          setModal({
+            isModal: true,
+            title: "Error",
+            message: "Something has gone wrong on our side",
+          });
+        }
+      } catch (err) {
+        catchErrors(err);
       }
-    } catch (err) {
-      catchErrors(err);
-    }
-  }, [setModal]);
+    },
+    [setModal]
+  );
 
   useEffect(() => {
     setIsLoading(false);
@@ -70,7 +79,17 @@ const Feed: FC = () => {
 
   if (isLoading) return <Spinner message="New idease are comming..." />;
   if (!pins?.length) return <h2>No pins avalible</h2>;
-  return <div>{pins && <MasonryLayout pins={pins} user={user} />}</div>;
+  return (
+    <div>
+      {pins && (
+        <MasonryLayout
+          deletePinFromArray={deletePinFromArray}
+          pins={pins}
+          user={user}
+        />
+      )}
+    </div>
+  );
 };
 
 export default Feed;

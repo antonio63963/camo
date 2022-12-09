@@ -15,6 +15,7 @@ type PinProps = {
 };
 
 type PinDetailsProps = {
+  id: string;
   image: string;
   category: string;
   title: string;
