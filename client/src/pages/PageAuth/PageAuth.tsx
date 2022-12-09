@@ -1,5 +1,5 @@
 import React, { FC } from "react";
-import { GoogleLogin, googleLogout } from "@react-oauth/google";
+import { GoogleLogin } from "@react-oauth/google";
 
 import camoVideo from "assets/camo_video.mp4";
 import logo from "assets/camoLogoWhite.png";
