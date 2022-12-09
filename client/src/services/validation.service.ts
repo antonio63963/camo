@@ -59,18 +59,8 @@ class Validation {
         if (!isValid || !formats.length) {
           return this;
         }
-        const reg = formats.reduce(function (acc, item, ind) {
-          if (formats.length - 1 === ind) {
-            acc += item;
-          } else {
-            acc += ` ${item} |`;
-          }
-          return acc;
-        }, "");
-
-        const EXP_REGEXP = new RegExp(`^(?:.*\.(?=(${reg})$))?[^.]*$`, "i");
-        const fileExtentionData = str.match(EXP_REGEXP);
-        isValid = fileExtentionData ? !!fileExtentionData[1] : false;
+        const extension = str.split('.').pop();
+        isValid = formats.some((format) => format === extension ? true : false);
         if (!isValid) message = "File extention is not a valid";
         return this;
       },
