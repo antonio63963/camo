@@ -59,10 +59,10 @@ class Validation {
         if (!isValid || !formats.length) {
           return this;
         }
-        const extension = str.split(".").pop();
-        isValid = formats.some((format) =>
-          format === extension ? true : false
-        );
+
+        const extension = str.split('.').pop();
+        isValid = formats.some((format) => format === extension ? true : false);
+
         if (!isValid) message = "File extention is not a valid";
         return this;
       },
