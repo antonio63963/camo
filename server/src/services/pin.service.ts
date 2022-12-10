@@ -1,7 +1,7 @@
 import PinModel from "models/pin";
 import { General } from "models/pin.type";
 import { Comment } from "models/comment.type";
-import { ObjectId } from 'mongodb';
+import { ObjectId } from "mongodb";
 
 import serviceUtils from "./serviceUtils";
 import commentService from "services/comment.service";
@@ -47,9 +47,7 @@ class PinService {
   }
 
   async removePin(pinId: string, postedBy: string) {
-    return await PinModel.findOneAndDelete(
-      { _id: pinId, postedBy }
-    );
+    return await PinModel.findOneAndDelete({ _id: pinId, postedBy });
   }
 
   async getPinById(pinId: string) {
@@ -64,9 +62,9 @@ class PinService {
       { $push: { likes: uid } }
     ).select("likes");
   }
-  
+
   async deleteLike(pinId: string, uid: string) {
-    console.log('New delet ObjID: ', uid);
+    console.log("New delet ObjID: ", uid);
     return await PinModel.updateOne(
       { _id: pinId },
       { $pull: { likes: uid } },
@@ -75,10 +73,10 @@ class PinService {
   }
 
   async getLikedPins(uid: string) {
-    console.log("LIKEDPINS: ", uid)
+    console.log("LIKEDPINS: ", uid);
     return await PinModel.find(
       {
-        likes: { $in: [uid]},
+        likes: { $in: [uid] },
       },
       { comments: false, about: false }
     )
@@ -89,6 +87,16 @@ class PinService {
   async getUserPins(uid: string) {
     return await PinModel.find(
       { postedBy: uid },
+      { comments: false, about: false }
+    ).populate("postedBy");
+  }
+
+  async search(searchTerm: string) {
+    const regex = new RegExp(`${searchTerm}`, "i");
+    return PinModel.find(
+      {
+        $or: [{ title: { $regex: regex } }, { about: { $regex: regex } }],
+      },
       { comments: false, about: false }
     ).populate("postedBy");
   }

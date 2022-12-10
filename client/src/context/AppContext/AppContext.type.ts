@@ -8,6 +8,8 @@ type Modal = {
 type TAppContext = {
   isModal: boolean;
   setModal: (data: Modal) => void;
+  searchTerm: string;
+  setSearchTerm: (data: string) => void;
 };
 
 export type {

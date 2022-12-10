@@ -1,5 +1,7 @@
-import React, { FC, useState, useEffect, useCallback } from "react";
+import React, { FC, useState, useEffect, useCallback, useContext } from "react";
+import axios from "axios";
 
+import { AppContext } from "context";
 import { MasonryLayout, Spinner } from "components";
 
 type User = {
@@ -17,38 +19,72 @@ type Pin = {
 };
 
 type SearchProps = {
-  setSearchTerm: (value: string) => void;
-  searchTerm: string;
   user: User;
 };
 
-const Search: FC<SearchProps> = ({ searchTerm, setSearchTerm, user }) => {
-  const [pins, setPins] = useState<Pin[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+const Search: FC<SearchProps> = ({ user }) => {
+  const { searchTerm, setModal } = useContext(AppContext);
+  const [searchPins, setSearchPins] = useState<Pin[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [timerId, setTimerId] = useState<ReturnType<typeof setTimeout> | null>(
+    null
+  );
 
-  //  1.get pins from pins container if reload this page get pins from server. 
-  //  2 set timeOut on input change to avoid often queries
+  const getSearchPins = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      const {
+        data: { status, pins },
+      } = await axios.get(`/pins/${searchTerm}/search`);
+      if (status === "ok") {
+        console.log("Search: ", pins);
+        setIsLoading(false);
+        setSearchPins(pins);
+      } else {
+        setModal({
+          isModal: true,
+          title: "Error",
+          message: "Searching was failed!",
+        });
+      }
+    } catch (err) {
+      setIsLoading(false);
+    }
+  }, [searchTerm, setModal]);
+
+  useEffect(() => {
+    setIsLoading(true);
+    if (timerId) clearTimeout(timerId);
+    if (searchTerm) {
+      let newTimer: ReturnType<typeof setTimeout> = setTimeout(
+        getSearchPins,
+        2000
+      );
+      setTimerId(newTimer);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchTerm]);
 
   const deletePinFromArray = useCallback(
     (pinId: string) => {
-      setPins([...pins].filter((pin) => pin.id !== pinId));
+      setSearchPins([...searchPins].filter((pin) => pin.id !== pinId));
     },
-    [pins]
+    [searchPins]
   );
-
-useEffect(() => {
-  if(searchTerm) {
-    setIsLoading(true);
-  }
-}, [searchTerm])
 
   return (
     <div>
       {isLoading && <Spinner message="Searching for Pins..." />}
-      {!pins.length && <MasonryLayout pins={pins} user={user} deletePinFromArray={deletePinFromArray} />}
-      {pins.length > 0 && searchTerm !== '' && !isLoading && 
+      {searchPins.length > 0 && (
+        <MasonryLayout
+          pins={searchPins}
+          user={user}
+          deletePinFromArray={deletePinFromArray}
+        />
+      )}
+      {searchPins.length === 0 && searchTerm !== "" && !isLoading && (
         <div className="mt-10 text-center text-xl">No Pins found...</div>
-      }
+      )}
     </div>
   );
 };

@@ -18,7 +18,7 @@ import PageHome from "pages/PageHome/PageHome";
 import Modal from "components/Modal";
 
 const App: FC<AppProps> = function App({ history }) {
-  const navigate = useNavigate();
+  const [searchTerm, setSearchTerm] = useState<string>("");
   const [{isModal, title: modalTitle, message: modalMessage}, setModal] = useState({ isModal: false, title: "", message: "" });
   const [isAuthenticated, setIsUserAuthenticated] = useState(
     !!storage.getTokens()
@@ -53,7 +53,7 @@ const App: FC<AppProps> = function App({ history }) {
         setIsAuthenticated,
       }}
     >
-      <AppContext.Provider value={{isModal, setModal }}>
+      <AppContext.Provider value={{isModal, setModal, searchTerm, setSearchTerm }}>
       {isModal && (
         <Modal
           title={modalTitle}

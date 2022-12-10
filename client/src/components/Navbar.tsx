@@ -2,7 +2,7 @@ import React, { FC, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 import { IoMdAdd, IoMdSearch } from "react-icons/io";
-import storage from 'services/storage.service';
+import {AppContext} from 'context';
 
 type User = {
   id: string;
@@ -12,13 +12,11 @@ type User = {
 };
 
 type NavProps = {
-  searchTerm: string;
-  setSearchTerm: (value: string) => void;
   user: User;
 };
 
-const Navbar: FC<NavProps> = ({ searchTerm, setSearchTerm, user }) => {
-
+const Navbar: FC<NavProps> = ({ user }) => {
+  const { searchTerm, setSearchTerm } = useContext(AppContext);
   const navigate = useNavigate();
 
   if (!user) return null;
