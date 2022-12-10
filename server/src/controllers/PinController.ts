@@ -171,6 +171,20 @@ class PinController {
       next(err);
     }
   }
+  async searchPins(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { searchTerm } = req.params;
+      const pins = await pinService.search(searchTerm);
+      if (pins) {
+        res.json({ status: "ok", pins });
+      } else {
+        throw ApiError.ServerError();
+      }
+    } catch (err) {
+      console.log("Search ERR: ", err);
+      next(err);
+    }
+  }
 }
 
 export default new PinController();

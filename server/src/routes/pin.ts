@@ -17,6 +17,7 @@ pinRouter.get("/userPins", PinController.userPins);
 pinRouter.get("/likedPins", PinController.likedPins);
 pinRouter.get("/:id", PinController.show);
 pinRouter.get("/:category/category", PinController.samePins);
+pinRouter.get("/:searchTerm/search", PinController.searchPins);
 pinRouter.post("/:id/comments", PinController.addComment);
 pinRouter.post(
   "/",
