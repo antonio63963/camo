@@ -71,10 +71,10 @@ class PinController {
         });
       } else {
         throw ApiError.ServerError();
-      };
+      }
     } catch (err) {
       next(err);
-    };
+    }
   }
 
   async delete(req: Request, res: Response, next: NextFunction) {
@@ -84,14 +84,14 @@ class PinController {
       const _id = await pinService.removePin(pinId, uid);
       if (_id) {
         res.json({
-          status: 'ok',
+          status: "ok",
         });
       } else {
         throw ApiError.ServerError();
-      };
+      }
     } catch (err) {
       next(err);
-    };
+    }
   }
 
   async samePins(req: Request, res: Response, next: NextFunction) {
@@ -102,16 +102,16 @@ class PinController {
         res.json({ status: "ok", pins });
       } else {
         throw ApiError.ServerError();
-      };
+      }
     } catch (err) {
       next(err);
-    };
+    }
   }
 
   async like(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
-      const uid = res.locals.auth.id;
+      const { uid } = res.locals.auth;
       const docId = await pinService.addLike(id, uid);
       console.log("Liked Pin Id: " + docId);
       if (docId) {
@@ -127,7 +127,7 @@ class PinController {
   async deleteLike(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
-      const uid = res.locals.auth.id;
+      const { uid } = res.locals.auth;
       const docId = await pinService.deleteLike(id, uid);
       console.log("deleteLiked Pin Id: " + docId);
       if (docId) {
@@ -158,7 +158,7 @@ class PinController {
 
   async likedPins(req: Request, res: Response, next: NextFunction) {
     try {
-      const uid = res.locals.auth.id;
+      const { uid } = res.locals.auth;
       const pins = await pinService.getLikedPins(uid);
       console.log("Liked pins: ", pins);
       if (pins) {

@@ -37,8 +37,7 @@ const generalSchema = new Schema<General>(
     ],
     likes: [
       {
-        type: Schema.Types.ObjectId,
-        ref: "user",
+        type: Schema.Types.String,
         required: true,
       },
     ],

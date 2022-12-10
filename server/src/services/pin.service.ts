@@ -1,6 +1,7 @@
 import PinModel from "models/pin";
 import { General } from "models/pin.type";
 import { Comment } from "models/comment.type";
+import { ObjectId } from 'mongodb';
 
 import serviceUtils from "./serviceUtils";
 import commentService from "services/comment.service";
@@ -58,23 +59,26 @@ class PinService {
   }
 
   async addLike(pinId: string, uid: string) {
-    return await PinModel.findOneAndUpdate(
+    return await PinModel.updateOne(
       { _id: pinId },
       { $push: { likes: uid } }
-    ).select("_id");
+    ).select("likes");
   }
+  
   async deleteLike(pinId: string, uid: string) {
-    return await PinModel.findOneAndUpdate(
+    console.log('New delet ObjID: ', uid);
+    return await PinModel.updateOne(
       { _id: pinId },
-      { $pullAll: { likes: uid } },
+      { $pull: { likes: uid } },
       { rawResult: true }
     ).select("_id");
   }
 
   async getLikedPins(uid: string) {
+    console.log("LIKEDPINS: ", uid)
     return await PinModel.find(
       {
-        likes: { $elemMatch: uid },
+        likes: { $in: [uid]},
       },
       { comments: false, about: false }
     )
