@@ -1,16 +1,14 @@
 import React, { FC, useState, useEffect, useCallback, useContext } from "react";
 import axios from "axios";
-import { Link, useParams } from "react-router-dom";
-import { MdDownloadForOffline } from "react-icons/md";
+import { useParams } from "react-router-dom";
 
 import { AppContext } from "context";
 
 import validation from "services/validation.service";
 import catchErrors from "services/error.service";
 import storage from "utils/appStorage";
-import routes from "routes";
 
-import { MasonryLayout, Spinner, PinDetails, CreateComment } from "components";
+import { MasonryLayout, Spinner, PinDetails } from "components";
 
 import { PinDetailsProps, PinProps, Comment } from "./PinDetailsContainer.type";
 
@@ -24,7 +22,6 @@ const PinDetailsContainer: FC<PinProps> = ({ user }) => {
   const [pinDetails, setPinDetails] = useState<PinDetailsProps | null>(null);
   const [comment, setComment] = useState<string>("");
   const [errorComment, setErrorComment] = useState<string | null>(null);
-
   const [isAddComment, setIsAddComment] = useState<boolean>(false);
 
   async function fetchPinDetails(pinId: string) {
@@ -35,9 +32,9 @@ const PinDetailsContainer: FC<PinProps> = ({ user }) => {
       if (status === "ok") {
         console.log(pinData);
         setPinDetails(pinData);
-      }
+      };
     } catch (err) {}
-  }
+  };
 
   const getSamePins = useCallback(async () => {
     if (pinDetails && pinDetails.category) {
@@ -50,8 +47,8 @@ const PinDetailsContainer: FC<PinProps> = ({ user }) => {
         }
       } catch (err) {
         setModal({ isModal: true, ...catchErrors(err) });
-      }
-    }
+      };
+    };
   }, [pinDetails, setModal]);
 
   const deletePinFromArray = useCallback(
@@ -61,18 +58,21 @@ const PinDetailsContainer: FC<PinProps> = ({ user }) => {
     [pins]
   );
 
-  const addComment = useCallback(async () => {
+  const commentValidation = useCallback((comment: string) => {
+    setIsAddComment(true);
     const messageResult = validation
       .string(comment)
       .isEmpty()
       .minLength(2)
-      .maxLength(5)
+      .maxLength(300)
       .result();
-    setIsAddComment(true);
-    console.log(messageResult);
-    if (!messageResult.isValid) {
-      setErrorComment(messageResult.message);
-    } else {
+    setErrorComment(messageResult.message);
+    return messageResult.isValid;
+  }, []);
+
+  const addComment = useCallback(async () => {
+    const isValid = commentValidation(comment);
+    if (isValid) {
       try {
         const {
           data: { status, comments },
@@ -91,7 +91,7 @@ const PinDetailsContainer: FC<PinProps> = ({ user }) => {
         setModal({ isModal: true, ...catchErrors(err) });
       }
     }
-  }, [comment, pinDetails, pinId, setModal, user.id]);
+  }, [comment, commentValidation, pinDetails, pinId, setModal, user.id]);
 
   useEffect(() => {
     setErrorComment(null);
@@ -105,7 +105,7 @@ const PinDetailsContainer: FC<PinProps> = ({ user }) => {
 
   useEffect(() => {
     getSamePins();
-  }, [pinDetails]);
+  }, [getSamePins, pinDetails]);
 
   return (
     <>
