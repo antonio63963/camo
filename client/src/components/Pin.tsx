@@ -96,7 +96,7 @@ const Pin: FC<PinProps> = ({
         catchErrors(err);
       }
     },
-    [navigate, setModal]
+    [deletePinFromArray, setModal]
   );
 
   return (
