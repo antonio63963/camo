@@ -23,7 +23,7 @@ const ImageFileInput: FC<InputProps> = ({
   errorMessage,
 }) => {
   return (
-    <>
+    <div>
       {!imageAsset ? (
         <div className="flex flex-col justify-center">
           <label className={cn(imageLink && "opacity-50")}>
@@ -66,7 +66,7 @@ const ImageFileInput: FC<InputProps> = ({
               )}
             </div>
           </label>
-          <p className="text-gray-400 mt-16">
+          <p className="text-gray-400 mt-16 lx:text-sm ">
             Use high-quality JPG, SVG, PNG, GIF, or TIFF less than 20 MB
           </p>
         </div>
@@ -86,7 +86,7 @@ const ImageFileInput: FC<InputProps> = ({
           </button>
         </div>
       )}
-    </>
+    </div>
   );
 };
 

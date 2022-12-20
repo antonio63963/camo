@@ -31,8 +31,8 @@ const PageHome: FC = () => {
       <div className="hidden md:flex h-screen flex-initial">
         <Sidebar user={userInfo && userInfo} />
       </div>
-      <div className="md:hidden flex flex-row">
-        <div className="p-2 w-full flex flex-row justify-between items-center shadow-md">
+      <div className="md:hidden flex flex-row bg-black">
+        <div className="p-2 w-full text-gray-50 flex flex-row justify-between items-center shadow-md">
           <HiMenu
             fontSize={40}
             className="cursor-pointer"
@@ -52,7 +52,7 @@ const PageHome: FC = () => {
           )}
         </div>
         {toggleSidebar && (
-          <div className="fixed w-4/5 bg-white h-screen overflow-y-auto shadow-md z-10 animate-slide-in">
+          <div className="fixed w-4/5 bg-black h-screen overflow-y-auto shadow-md z-10 animate-slide-in">
             <div className="absolute w-full flex justify-end items-center p-2">
               <AiFillCloseCircle
                 fontSize={30}

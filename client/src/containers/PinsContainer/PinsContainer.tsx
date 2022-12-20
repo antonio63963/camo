@@ -17,21 +17,14 @@ type PinProps = {
 };
 
 const Pins: FC<PinProps> = ({ user }) => {
-  // const [searchTerm, setSearcherTerm] = useState<string>("");
-  // const [timerId, setTimerId] = useState<ReturnType<typeof setTimeout> | null>(
-  //   null
-  // );
-
   return (
-    <div className="px-2 md:px-5 w-full">
-      <div className="bg-gray-50">
+    <div className=" w-full">
+      <div className="bg-gray-100 px-2 md:px-5 pt-5">
         <Navbar
-          // searchTerm={searchTerm}
-          // setSearchTerm={setSearcherTerm}
           user={user}
         ></Navbar>
       </div>
-      <div className="h-full">
+      <div className="h-full px-2 md:px-5">
         <Routes>
           <Route path="/" element={<Feed />} />
           <Route path="/category/:categoryId" element={<Feed />} />

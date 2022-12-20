@@ -109,13 +109,13 @@ const CreatePin: FC<CreatePinProps> = ({ user }) => {
   }, [title, about, category, imageAsset, imageLink, errorsFields]);
 
   return (
-    <div className="flex flex-col justify-center items-center mt-5 lg:h-4/5">
+    <div className="flex flex-col justify-center items-center mt-5">
       {fields && (
         <p className="text-red-500 mb-5 text-xl transition-all duration-150 ease-in">
           Please fill in all the fields!
         </p>
       )}
-      <div className="flex lg:flex-row flex-col justify-center bg-white lg:p-5 p-3 lg:w-4/5 w-full">
+      <div className="flex xl:flex-row flex-col justify-center bg-white xl:p-5 p-3 lg:w-4/5 w-full">
         <ImageFileInputContainer
           imageAsset={imageAsset}
           setImageAsset={setImageAsset}
@@ -131,8 +131,8 @@ const CreatePin: FC<CreatePinProps> = ({ user }) => {
           setAbout={setAbout}
           setCategory={setCategory}
           errorMessages={errorsFields}
-        />
-        <SaveButton onButtonClick={savePin} />
+          savePin={savePin}
+        /> 
       </div>
     </div>
   );

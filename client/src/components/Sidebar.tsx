@@ -3,7 +3,6 @@ import { NavLink, Link } from "react-router-dom";
 import { RiHomeFill } from "react-icons/ri";
 import { IoIosArrowForward } from "react-icons/io";
 
-import logo from "../assets/logo.png";
 import camoLogo from "../assets/camoLogo.png";
 
 import { categories } from "utils/data";
@@ -27,14 +26,14 @@ type SidebarProps = {
 
 const Sidebar: FC<SidebarProps> = ({ user, onCloseSidebar }) => {
   return (
-    <div className="flex flex-col justify-between bg-white h-full overflow-y-scroll min-w-210 hide-scrollbar">
-      <div className="flex flex-col">
+    <div className="flex flex-col justify-between h-full overflow-y-scroll min-w-210 hide-scrollbar">
+      <div className="flex flex-col bg-black pb-3">
         <Link
           className="flex px-5 gap-2 my-6 pt-1 w-190 items-center"
           to="/"
           onClick={onCloseSidebar}
         >
-          <img src={camoLogo} alt="logo" className="w-full" />
+          <img src={camoLogo} alt="logo" className="w-25" />
         </Link>
         <div className="flex flex-col gap-5">
           <NavLink
@@ -70,7 +69,7 @@ const Sidebar: FC<SidebarProps> = ({ user, onCloseSidebar }) => {
       {user && (
         <Link
           to={`user-profile/${user.id}`}
-          className="flex gap-5 items-center my-5 mb-3 bg-white p-5 rounded-lg shadow-lg"
+          className="flex gap-5 items-center py-5 mb-3 bg-white p-5 rounded-lg shadow-lg"
           onClick={onCloseSidebar}
         >
           <img
