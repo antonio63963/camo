@@ -81,7 +81,7 @@ const Login: FC<LoginProps> = ({
           <input
             type="file"
             name="upload-image"
-            onChange={uploadAvatar}
+            onChange={(e) => uploadAvatar(e)}
             className="w-0 h-0"
           />
           {wrongImageType && (

@@ -1,5 +1,5 @@
 import Login from "components/Login/Login";
-import { FC, useCallback, useState } from "react";
+import { FC, useCallback, useEffect, useState } from "react";
 
 import validation from "services/validation.service";
 
@@ -93,14 +93,17 @@ const LoginContainer: FC<LoginProps> = ({ onLogin, onSignUp }) => {
   const onSubmit = useCallback(async () => {
     if (!isLogin) {
       if (!validationSignUpFields()) return;
-      const user = {
-        name,
-        email,
-        password,
-        repeatPassword,
-        imageAsset,
-      };
-      onSignUp(user);
+
+      const formData = new FormData();
+      formData.append("name", name);
+      formData.append("email", email);
+      formData.append("password", password);
+      formData.append("repeatPassword", repeatPassword);
+      if (imageAsset) {
+        formData.append("imageAsset", imageAsset);
+      }
+      onSignUp(formData);
+      
     } else {
       if (!validationLoginFields()) return;
       onLogin({ email, password });
@@ -117,6 +120,10 @@ const LoginContainer: FC<LoginProps> = ({ onLogin, onSignUp }) => {
     validationLoginFields,
     validationSignUpFields,
   ]);
+
+  useEffect(() => {
+    console.log(imageAsset);
+  }, [imageAsset]);
 
   return (
     <Login

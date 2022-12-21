@@ -41,6 +41,7 @@ class AuthController {
   }
 
   async singnUp(req: Request, res: Response, next: NextFunction) {
+    console.log("sigUp: ", req.body)
     try{
 
     }catch(err){
