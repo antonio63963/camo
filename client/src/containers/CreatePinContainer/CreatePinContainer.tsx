@@ -3,14 +3,9 @@ import { useNavigate } from "react-router-dom";
 
 import validation from "services/validation.service";
 
-import Spinner from "components/Spinner";
-import { categories } from "utils/data";
 import axios from "axios";
 import { ImageFileInputContainer } from "containers";
-import { setEmitFlags } from "typescript";
 import CreatePinInputs from "components/CreatePinInputs";
-import SaveButton from "components/SaveButton";
-// categories [{name: 'animals', image: ''}]
 
 import { CreatePinProps } from "./CreatePinContainer.type";
 import catchErrors from "services/error.service";
@@ -18,8 +13,6 @@ import catchErrors from "services/error.service";
 const CreatePin: FC<CreatePinProps> = ({ user }) => {
   const [title, setTitle] = useState<string>("");
   const [about, setAbout] = useState<string>("");
-  // const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [fields, setFields] = useState<boolean>(false);
   const [category, setCategory] = useState<string>("");
   const [imageAsset, setImageAsset] = useState<File | null>(null);
   const [imageLink, setImageLink] = useState<string>("");
@@ -110,11 +103,6 @@ const CreatePin: FC<CreatePinProps> = ({ user }) => {
 
   return (
     <div className="flex flex-col justify-center items-center mt-5">
-      {fields && (
-        <p className="text-red-500 mb-5 text-xl transition-all duration-150 ease-in">
-          Please fill in all the fields!
-        </p>
-      )}
       <div className="flex xl:flex-row flex-col justify-center bg-white xl:p-5 p-3 lg:w-4/5 w-full">
         <ImageFileInputContainer
           imageAsset={imageAsset}
