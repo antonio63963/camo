@@ -1,137 +1,46 @@
-import axios from "axios";
-import { FC, useCallback, useState } from "react";
+import { FC } from "react";
 import { AiOutlineCloudUpload } from "react-icons/ai";
 
-import validation from "services/validation.service";
-import catchErrors from "services/error.service";
+type ErrorsFields = {
+  name: string;
+  email: string;
+  password: string;
+  repeatPassword: string;
+};
 
-const LoginContainer: FC = () => {
-  const [isLogin, setIsLogin] = useState<boolean>(true);
+type LoginProps = {
+  isLogin: boolean;
+  name: string;
+  setName: (value: string) => void;
+  email: string;
+  setEmail: (value: string) => void;
+  wrongImageType: boolean;
+  uploadAvatar: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  password: string;
+  setPassword: (value: string) => void;
+  repeatPassword: string;
+  setRepeatPassword: (value: string) => void;
+  onSubmit: () => void;
+  setIsLogin: (value: boolean) => void;
+  errorsFields: ErrorsFields;
+};
 
-  const [name, setName] = useState<string>("");
-  const [email, setEmail] = useState<string>("");
-  const [imageAsset, setImageAsset] = useState<File | null>(null);
-  const [password, setPassword] = useState<string>("");
-  const [repeatPassword, setRepeatPassword] = useState<string>("");
-  const [wrongImageType, setWrongImageType] = useState<boolean>(false);
-
-  const [errorsFields, setErrorsFields] = useState({
-    name: "",
-    email: "",
-    password: "",
-    repeatPassword: "",
-  });
-
-  function uploadAvatar(e: React.ChangeEvent<HTMLInputElement>) {
-    console.log("File: ", e.target);
-    if (!e.target.files) return;
-    const { type } = e.target?.files[0];
-    console.log("FILE: ", e.target.files[0]);
-    if (
-      type === "image/png" ||
-      type === "image/svg" ||
-      type === "image/jpeg" ||
-      type === "image/gif" ||
-      type === "image/tiff"
-    ) {
-      setWrongImageType(false);
-      // setIsLoading(true);
-      setImageAsset(e.target?.files[0]);
-      // axios.post('...', e.target.files[0])
-      // setIsLoading(false);
-    } else {
-      setWrongImageType(true);
-    }
-  }
-
-  const validationSignUpFields = useCallback(() => {
-    const nameInput = validation
-      .string(name)
-      .isEmpty()
-      ?.minLength(2)
-      ?.maxLength(30)
-      ?.result();
-    const emailInput = validation.string(email).isEmpty()?.email()?.result();
-    const passwordInput = validation
-      .string(password)
-      .isEmpty()
-      ?.minLength(3)
-      .result();
-    const repeatPasswordInput = repeatPassword !== password ? "Not equal!" : "";
-
-    setErrorsFields({
-      name: nameInput?.message,
-      email: emailInput?.message,
-      password: passwordInput?.message,
-      repeatPassword: repeatPasswordInput,
-    });
-
-    if (nameInput.isValid && emailInput.isValid && passwordInput.isValid) {
-      return true;
-    } else {
-      return false;
-    }
-  }, [email, name, password, repeatPassword]);
-
-  const validationLoginFields = useCallback(() => {
-    const emailInput = validation.string(email).isEmpty()?.email()?.result();
-    const passwordInput = validation
-      .string(password)
-      .isEmpty()
-      ?.minLength(3)
-      .result();
-
-    setErrorsFields({
-      ...errorsFields,
-      email: emailInput?.message,
-      password: passwordInput?.message,
-    });
-
-    if (emailInput.isValid && passwordInput.isValid) {
-      return true;
-    } else {
-      return false;
-    }
-  }, [email, errorsFields, password]);
-
-  const onSubmit = useCallback(async () => {
-    if (!isLogin) {
-      if (!validationSignUpFields()) return;
-      try {
-        const user = {
-          name,
-          email,
-          password,
-          repeatPassword,
-          imageAsset,
-        };
-        const {
-          data: { status, userInfo, tokens },
-        } = await axios.post("/auth/signUp", user);
-      } catch (err) {
-        catchErrors(err);
-      }
-    } else {
-      if (!validationLoginFields()) return;
-      try {
-        const {
-          data: { status, userInfo, tokens },
-        } = await axios.post("/auth/signin", { email, password });
-      } catch (err) {
-        catchErrors(err);
-      }
-    };
-  }, [
-    email,
-    imageAsset,
-    isLogin,
-    name,
-    password,
-    repeatPassword,
-    validationLoginFields,
-    validationSignUpFields,
-  ]);
-
+const Login: FC<LoginProps> = ({
+  isLogin,
+  name,
+  setName,
+  email,
+  setEmail,
+  wrongImageType,
+  uploadAvatar,
+  password,
+  setPassword,
+  repeatPassword,
+  setRepeatPassword,
+  onSubmit,
+  setIsLogin,
+  errorsFields,
+}) => {
   return (
     <div className="px-2 py-1 flex flex-col">
       <h2 className="text-white opacity-70">
@@ -224,4 +133,4 @@ const LoginContainer: FC = () => {
   );
 };
 
-export default LoginContainer;
+export default Login;

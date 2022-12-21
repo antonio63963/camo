@@ -1,4 +1,4 @@
-import React, { FC, useContext } from "react";
+import React, { FC, useCallback, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
@@ -6,6 +6,9 @@ import { AuthContext, AppContext } from "context";
 import storage from "services/storage.service";
 
 import PageAuth from "./PageAuth";
+
+import { ServerResponse, UserData } from "./PageAuth.type";
+import catchErrors from "services/error.service";
 
 const modalObj = {
   isModal: true,
@@ -18,30 +21,54 @@ const PageAuthContainer: FC = () => {
   const { setModal } = useContext(AppContext);
   const navigate = useNavigate();
 
-  const onGoogleSuccess = async (token: string) => {
-    try {
-      const {
-        data: { status, tokens, userInfo },
-      } = await axios.post("/auth/googleAuth", {
-        token,
-      });
-      if (status === "ok") {
-        setIsAuthenticated(true, tokens);
-        storage.saveUserInfo(userInfo);
+  const onServerResponse = useCallback(
+    (data: ServerResponse, modalMessage: string) => {
+      if (data.status === "ok") {
+        setIsAuthenticated(true, data.tokens);
+        storage.saveUserInfo(data.userInfo);
         navigate("/", { replace: true });
       } else {
-        setModal(modalObj);
+        setModal({ isModal: true, title: "Error", message: modalMessage });
         throw Error("Authorization is failed!");
       }
+    },
+    [navigate, setIsAuthenticated, setModal]
+  );
+
+  const onGoogleAuth = async (token: string) => {
+    try {
+      const { data } = await axios.post("/auth/googleAuth", {
+        token,
+      });
+      onServerResponse(data, "Google auth was failed!");
     } catch (err: any) {
-      // setLoginFailed(true);
-      throw new Error(err.message);
+      catchErrors(err);
     }
+  };
+
+  const onSignUp = async (userData: UserData) => {
+    try {
+      const { data } = await axios.post("/auth/signUp", userData);
+      onServerResponse(data, "Sign Up was failed!");
+    } catch (err) {
+      catchErrors(err);
+    }
+  }
+
+  const onLogin = async (userData: {email: string, password: string}) => {
+    try {
+      const { data } = await axios.post("/auth/signin", userData);
+      onServerResponse(data, "Signin was failed!");
+    } catch (err) {
+      catchErrors(err);
+    };
   };
 
   return (
     <PageAuth
-      onGoogleSuccess={onGoogleSuccess}
+      onLogin={onLogin}
+      onSignUp={onSignUp}
+      onGoogleSuccess={onGoogleAuth}
       onLoginFailed={() => setModal(modalObj)}
     />
   );

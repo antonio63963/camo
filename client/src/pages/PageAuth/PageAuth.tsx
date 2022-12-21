@@ -6,9 +6,9 @@ import logo from "assets/camoLogoWhite.png";
 
 import { AuthProps } from "./PageAuth.type";
 import { AiOutlineCloudUpload } from "react-icons/ai";
-import LoginContainer from "components/Login/Login";
+import LoginContainer from "containers/LoginContainer/LoginContainer";
 
-const PageAuth: FC<AuthProps> = ({ onGoogleSuccess, onLoginFailed }) => {
+const PageAuth: FC<AuthProps> = ({ onGoogleSuccess, onLoginFailed, onLogin, onSignUp }) => {
   return (
     <div className="flex justify-start items-center flex-col h-screen">
       <div style={{minHeight: '660px'}} className="relative w-full h-full min-h-full">
@@ -26,7 +26,7 @@ const PageAuth: FC<AuthProps> = ({ onGoogleSuccess, onLoginFailed }) => {
           <div className="p-5">
             <img src={logo} width="130px" alt="logo" />
           </div>
-          <LoginContainer />
+          <LoginContainer onLogin={onLogin} onSignUp={onSignUp} />
 
           <h2 className="text-white opacity-70 m-3">OR</h2>
 
