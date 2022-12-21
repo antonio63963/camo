@@ -2,25 +2,6 @@ import { Request, Response, NextFunction } from "express";
 import userService from "services/auth.service";
 import tokenService from "services/token.service";
 
-const users = [
-  {
-    id: "1",
-    name: "name",
-    email: "test1@test.com",
-    password: 123,
-    isTeacher: true,
-    jwt: "teacher",
-  },
-  {
-    id: "2",
-    name: "name",
-    email: "test@test.com",
-    password: 234,
-    isTeacher: false,
-    jwt: "token",
-  },
-];
-
 class AuthController {
   async googleAuth(req: Request, res: Response, next: NextFunction) {
     try {
@@ -53,13 +34,16 @@ class AuthController {
   async signin(req: Request, res: Response, next: NextFunction) {
     try {
       const { email, password } = req.body;
-      // const userData = await userService.login(email, password);
-      const result = users.find((user) => user.email === email);
-      const userData = { token: result.jwt, userId: result.id };
-      if (userData) {
-        res.json(userData);
-      }
+      console.log("sigIn: ", req.body)
     } catch (err) {
+      next(err);
+    }
+  }
+
+  async singnUp(req: Request, res: Response, next: NextFunction) {
+    try{
+
+    }catch(err){
       next(err);
     }
   }

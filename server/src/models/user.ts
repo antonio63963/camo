@@ -46,12 +46,6 @@ const generalSchema = new Schema<User>(
   }
 );
 
-// generalSchema.path("avatar").validate((val: string) => {
-//   const urlRegex =
-//     /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-/]))?/;
-//   return urlRegex.test(val);
-// }, 'Invalid URL.');
-
 generalSchema.virtual('id').get(function() {
   return this._id.toHexString();
 });

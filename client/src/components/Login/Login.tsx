@@ -3,6 +3,7 @@ import { FC, useCallback, useState } from "react";
 import { AiOutlineCloudUpload } from "react-icons/ai";
 
 import validation from "services/validation.service";
+import catchErrors from "services/error.service";
 
 const LoginContainer: FC = () => {
   const [isLogin, setIsLogin] = useState<boolean>(true);
@@ -107,11 +108,19 @@ const LoginContainer: FC = () => {
         const {
           data: { status, userInfo, tokens },
         } = await axios.post("/auth/signUp", user);
-      } catch (err) {}
+      } catch (err) {
+        catchErrors(err);
+      }
     } else {
       if (!validationLoginFields()) return;
-      // axios
-    }
+      try {
+        const {
+          data: { status, userInfo, tokens },
+        } = await axios.post("/auth/signin", { email, password });
+      } catch (err) {
+        catchErrors(err);
+      }
+    };
   }, [
     email,
     imageAsset,
@@ -182,7 +191,7 @@ const LoginContainer: FC = () => {
       <p className="text-red-500 text-basic text-center mt-2">
         {errorsFields.password}
       </p>
-      
+
       {!isLogin && (
         <>
           <input

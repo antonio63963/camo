@@ -4,7 +4,7 @@ import tokenService from "services/token.service";
 import ApiError from "lib/ApiError";
 
 const checkAuth = async (req: Request, res: Response, next: NextFunction) => {
-  console.log('CheckAuth params: ', req.originalUrl)
+  console.log('CheckAuth params: ', req.originalUrl, 'method: ', req.method)
   try {
     const rawTokens = req.headers.authorization?.split(" ")[1];
     const { accessToken, refreshToken } = JSON.parse(rawTokens);
