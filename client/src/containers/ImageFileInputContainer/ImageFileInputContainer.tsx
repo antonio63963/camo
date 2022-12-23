@@ -16,7 +16,6 @@ const ImageFileInputContainer: FC<InputProps> = ({
   const [wrongImageType, setWrongImageType] = useState<boolean>(false);
 
   function uploadImage(e: React.ChangeEvent<HTMLInputElement>) {
-    console.log('File: ', e.target)
     if (!e.target.files) return;
     const { type } = e.target?.files[0];
     console.log("FILE: ", e.target.files[0]);

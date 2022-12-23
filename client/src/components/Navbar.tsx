@@ -2,7 +2,7 @@ import React, { FC, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 import { IoMdAdd, IoMdSearch } from "react-icons/io";
-import {AppContext} from 'context';
+import { AppContext } from "context";
 import NoAvatar from "components/NoAvatar/NoAvatar";
 import UploadAvatar from "components/UploadAvatar/UploadAvatar";
 
@@ -18,7 +18,8 @@ type NavProps = {
 };
 
 const Navbar: FC<NavProps> = ({ user }) => {
-  const { isAvatar, setIsAvatar, searchTerm, setSearchTerm } = useContext(AppContext);
+  const { isAvatar, setIsAvatar, searchTerm, setSearchTerm } =
+    useContext(AppContext);
   const navigate = useNavigate();
 
   if (!user) return null;
@@ -40,29 +41,30 @@ const Navbar: FC<NavProps> = ({ user }) => {
         <div className="relative">
           <Link to={`/user-profile/:${user.id}`} className="hidden md:block">
             {user.picture ? (
-                  <img
-                    src={user.picture}
-                    alt="userImage"
-                    className="w-10 rounded-full"
-                  />
-                ) : (
-                  <NoAvatar theme={'light'} />
-                )}
+              <img
+                src={user.picture}
+                alt="userImage"
+                className="w-10 rounded-full"
+              />
+            ) : (
+              <NoAvatar theme={"light"} />
+            )}
           </Link>
 
           {!isAvatar && (
             <div className="md:block hidden">
               <UploadAvatar
-              closeModal={() => {
-                setIsAvatar(true);
-              }}
-            />
+                closeModal={() => {
+                  setIsAvatar(true);
+                }}
+              />
             </div>
-            
           )}
-
         </div>
-        <Link to={'/create-pin'} className="bg-black text-white rounded-lg w-12 h-12 md:w-14 md:h-14 flex justify-center items-center">
+        <Link
+          to={"/create-pin"}
+          className="bg-black text-white rounded-lg w-12 h-12 md:w-14 md:h-14 flex justify-center items-center"
+        >
           <IoMdAdd />
         </Link>
       </div>

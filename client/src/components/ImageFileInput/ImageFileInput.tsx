@@ -23,7 +23,7 @@ const ImageFileInput: FC<InputProps> = ({
   errorMessage,
 }) => {
   return (
-    <div>
+    <>
       {!imageAsset ? (
         <div className="flex flex-col justify-center">
           <label className={cn(imageLink && "opacity-50")}>
@@ -71,7 +71,7 @@ const ImageFileInput: FC<InputProps> = ({
           </p>
         </div>
       ) : (
-        <div className="relative h-full flex justify-center items-center">
+        <div className="relative flex justify-center items-center">
           <img
             src={URL.createObjectURL(imageAsset!)}
             alt="uploaded-pic"
@@ -86,7 +86,7 @@ const ImageFileInput: FC<InputProps> = ({
           </button>
         </div>
       )}
-    </div>
+    </>
   );
 };
 
