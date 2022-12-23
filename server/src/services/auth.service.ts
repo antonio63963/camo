@@ -16,7 +16,7 @@ type User = {
 class UserService {
   async createUser(userData: User) {
     const user = new UserModel();
-    Object.keys(userData).forEach((key:string) => (user[key] = userData[key]));
+    Object.keys(userData).forEach((key: string) => (user[key] = userData[key]));
     const { id, name, email, picture } = await user.save();
     console.log("New user was created:", id);
     return { id, name, email, picture };
@@ -27,26 +27,29 @@ class UserService {
     const candidate = await UserModel.findOne(
       { email, googleId },
       { id: true, name: true, email: true, picture: true }
-      );
-      if (candidate && candidate.isBanned) {
-        throw ApiError.ForbiddenError();
-      }
-      if (candidate && !candidate.isBanned) {
-      console.log('GOOO: ', candidate)
+    );
+    if (candidate && candidate.isBanned) {
+      throw ApiError.ForbiddenError();
+    }
+    if (candidate && !candidate.isBanned) {
+      console.log("GOOO: ", candidate);
       return candidate;
     }
     return await this.createUser(userData);
   }
-  // async registration(email: string, password: string) {
-  //   const candidate = await UserModel.findOne({ email });
-  //   if (candidate) {
-  //     throw ApiError.BadRequestError(
-  //       `User with a such email ${email} already exists!`
-  //     );
-  //   }
-  //   const hashPassword = await bcrypt.hash(password, 3);
-  //   const user = await UserModel.create({ email, password: hashPassword });
-  // }
+
+  async registration(email: string, password: string, name: string) {
+    const candidate = await UserModel.findOne({ email });
+    if (candidate) {
+      throw ApiError.BadRequestError(
+        `User with a such email ${email} already exists!`
+      );
+    } else {
+      const hashPassword = await bcrypt.hash(password, 3);
+      const user = await UserModel.create({ email, password: hashPassword, name });
+      return user;
+    }
+  }
 
   async login(email: string, password: string) {
     const user = await UserModel.findOne({ email });
@@ -60,8 +63,6 @@ class UserService {
     if (!isPassEquals) {
       throw ApiError.UnauthorizedError();
     }
-
-    
   }
 }
 

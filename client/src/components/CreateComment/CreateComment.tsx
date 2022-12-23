@@ -1,6 +1,6 @@
+import NoAvatar from "components/NoAvatar/NoAvatar";
 import React, { FC } from "react";
 import { Link } from "react-router-dom";
-
 
 type User = {
   id: string;
@@ -18,19 +18,30 @@ type CreateCommentProps = {
   errorComment: string | null;
 };
 
-const CreateComment: FC<CreateCommentProps> = ({user, comment, setComment, addComment, isAddComment, errorComment}) => {
+const CreateComment: FC<CreateCommentProps> = ({
+  user,
+  comment,
+  setComment,
+  addComment,
+  isAddComment,
+  errorComment,
+}) => {
   return (
     <>
       <div className="mt-6 flex fex-wrap gap-3">
         <Link
           to={`/user-profile/:${user.id}`}
-          className="flex gap-2 mt-5 items-center bg-white rounded-lg"
+          className="flex gap-2 items-center bg-white rounded-lg"
         >
-          <img
-            src={user.picture}
-            alt="user-img"
-            className="w-10 h-10 rounded-full cursor-pointer"
-          />
+          {user.picture ? (
+            <img
+              src={user.picture}
+              alt="userImage"
+              className="w-10 rounded-full"
+            />
+          ) : (
+            <NoAvatar theme={"light"} />
+          )}
         </Link>
         <input
           className="flex-1 border-gray-100 outline-none border-2 p-2 rounded-2xl focus:border-gray-300"

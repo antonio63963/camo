@@ -102,8 +102,14 @@ const LoginContainer: FC<LoginProps> = ({ onLogin, onSignUp }) => {
       if (imageAsset) {
         formData.append("imageAsset", imageAsset);
       }
-      onSignUp(formData);
-      
+      const user = {
+        name,
+        email,
+        password,
+        repeatPassword,
+        imageAsset: null,
+      };
+      onSignUp(user);
     } else {
       if (!validationLoginFields()) return;
       onLogin({ email, password });

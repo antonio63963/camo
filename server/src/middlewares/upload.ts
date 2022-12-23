@@ -3,6 +3,8 @@ import path from "path";
 import { Request } from "express";
 import { v4 as uuidv4 } from 'uuid';
 
+import sharp from 'sharp';
+
 const folderUploads = path.resolve("upload/avatars/");
 
 const storage = multer.diskStorage({
@@ -41,9 +43,9 @@ const limits = {
 };
 
 const uploadFile = multer({ storage, fileFilter, limits }).single("imageAsset");
-const parseText = multer().none();
+const upload = multer();
 
 export {
   uploadFile,
-  parseText,
+  upload,
 };

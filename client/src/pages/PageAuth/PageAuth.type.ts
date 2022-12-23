@@ -2,7 +2,7 @@ type AuthProps = {
   onGoogleSuccess: (data: string) => void;
   onLoginFailed: () => void;
   onLogin: (data: {email: string, password: string}) => void;
-  onSignUp: (data: FormData) => void;
+  onSignUp: (data: UserData) => void;
 };
 
 type UserInfo = {

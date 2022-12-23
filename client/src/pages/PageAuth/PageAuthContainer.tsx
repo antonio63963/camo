@@ -26,6 +26,7 @@ const PageAuthContainer: FC = () => {
       if (data.status === "ok") {
         setIsAuthenticated(true, data.tokens);
         storage.saveUserInfo(data.userInfo);
+        console.log('on ServerResponse: ', data)
         navigate("/", { replace: true });
       } else {
         setModal({ isModal: true, title: "Error", message: modalMessage });
@@ -46,7 +47,7 @@ const PageAuthContainer: FC = () => {
     }
   };
 
-  const onSignUp = async (userData: FormData) => {
+  const onSignUp = async (userData: UserData) => {
     try {
       const { data } = await axios.post("/auth/signUp", userData);
       onServerResponse(data, "Sign Up was failed!");

@@ -9,6 +9,7 @@ import { BsFillArrowUpRightCircleFill } from "react-icons/bs";
 import axios from "axios";
 import { AppContext } from "context";
 import catchErrors from "services/error.service";
+import NoAvatar from "components/NoAvatar/NoAvatar";
 
 const iconStyle =
   "bg-white w-9 h-9 rounded-full flex items-center justify-center text-dark text-xl opacity-75 hover:opacity-100 hover:shadow-md outline-none";
@@ -173,11 +174,16 @@ const Pin: FC<PinProps> = ({
         to={`user-profile/${postedBy?.id}`}
         className="flex gap-2 mt-2 items-center mt-2"
       >
-        <img
-          className="w-8 h-8 rounded-full object-cover"
-          src={postedBy.picture ?? postedBy.name.slice(0, 2)}
-          alt="user-profile"
-        />
+
+        {postedBy.picture ? (
+            <img
+              src={postedBy.picture}
+              alt="userProfile"
+              className="w-8 h-8 rounded-full object-cover"
+            />
+          ) : (
+            <NoAvatar theme={"light"} />
+          )}
         <p className="font-semibold capitalize">{postedBy.name}</p>
       </Link>
     </div>

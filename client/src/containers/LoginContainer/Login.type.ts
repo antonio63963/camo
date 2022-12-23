@@ -8,7 +8,7 @@ type UserData = {
 
 type LoginProps = {
   onLogin: (data: {email: string, password: string}) => void;
-  onSignUp: (data: FormData) => void;
+  onSignUp: (data: UserData) => void;
 };
 
 export type {

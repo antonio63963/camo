@@ -6,6 +6,7 @@ import { IoIosArrowForward } from "react-icons/io";
 import camoLogo from "../assets/camoLogo.png";
 
 import { categories } from "utils/data";
+import NoAvatar from "components/NoAvatar/NoAvatar";
 
 const isNotActiveStyle =
   "flex items-center px-5 gap-3 text-gray-500 hover:text-black transition-all duration-200 ease-in-out capitalize";
@@ -59,7 +60,11 @@ const Sidebar: FC<SidebarProps> = ({ user, onCloseSidebar }) => {
                 }
                 onClick={onCloseSidebar}
               >
-                <img src={cat.image} className="w-8 h-8 rounded-full shadow-sm" alt="category" />
+                <img
+                  src={cat.image}
+                  className="w-8 h-8 rounded-full shadow-sm"
+                  alt="category"
+                />
                 {cat.name}
               </NavLink>
             );
@@ -72,11 +77,15 @@ const Sidebar: FC<SidebarProps> = ({ user, onCloseSidebar }) => {
           className="flex gap-5 items-center py-5 mb-3 bg-white p-5 rounded-lg shadow-lg"
           onClick={onCloseSidebar}
         >
-          <img
-            src={user.picture}
-            className="w-10 h-10 rounded-full"
-            alt="user-img"
-          />
+          {user.picture ? (
+            <img
+              src={user.picture}
+              className="w-10 h-10 rounded-full"
+              alt="user-img"
+            />
+          ) : (
+            <NoAvatar theme='light'/>
+          )}
           <p>{user.name}</p>
         </Link>
       )}

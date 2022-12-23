@@ -7,3 +7,4 @@ export { default as MasonryLayout } from './MasonryLayout';
 export { default as Spinner } from './Spinner';
 export { default as PinDetails } from './PinDetails/PinDetails';
 export { default as CreateComment } from './CreateComment/CreateComment';
+export { default as UploadAvatar } from './UploadAvatar/UploadAvatar';

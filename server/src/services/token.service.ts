@@ -40,13 +40,6 @@ class TokenService {
     return null;
   }
 
-  // createRefreshToken() {
-  //   console.log('refresh+++++')
-  //   const uniq = uniqid();
-  //   console.log('refresh____', uniq)
-  //   return uniq;
-  // }
-
   async checkRefreshToken(refreshToken: string) {
     const { token } = await TokenModel.findOne({ refreshToken: refreshToken });
     return token ? (this.verifyToken(token) as JwtPayload) : null;
@@ -67,6 +60,23 @@ class TokenService {
   //     };
   //   }
   // }
+
+  async getTokens(uid: string, email: string) {
+    const accessToken = await this.createAccessToken({
+      uid,
+    });
+    const refreshToken = await this.createRefreshToken({
+      uid,
+      email,
+    });
+    const refreshTokenDoc = await this.saveTokenToDB(uid, refreshToken);
+    if (refreshTokenDoc && accessToken) {
+      return { accessToken, refreshToken };
+    } else {
+      console.log('Tokens were not built!');
+      return null;
+    }
+  }
 
   async saveTokenToDB(userId: string, token: string) {
     return await TokenModel.create({ userId, token });

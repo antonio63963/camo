@@ -1,3 +1,4 @@
+import NoAvatar from "components/NoAvatar/NoAvatar";
 import SaveButton from "components/SaveButton";
 import React, { FC } from "react";
 
@@ -48,11 +49,15 @@ const CreatePinInputs: FC<InputProps> = ({
         </div>
         {user && (
           <div className="flex gap-2 my-2 items-center gb-white rounded-lg">
-            <img
-              src={user.picture}
-              alt="user-profile"
-              className="h-8 w-8 rounded-full"
-            />
+            {user.picture ? (
+                <img
+                  src={user.picture}
+                  alt="userImage"
+                  className="w-10 rounded-full"
+                />
+              ) : (
+                <NoAvatar theme={'light'} />
+              )}
             <p className="font-bold">{user.name}</p>
           </div>
         )}

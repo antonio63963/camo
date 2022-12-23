@@ -8,22 +8,12 @@ class AuthController {
       const user = res.locals.auth;
       const userInfo = await userService.googleAuth(user);
       if (userInfo) {
-        const accessToken = await tokenService.createAccessToken({
-          uid: userInfo.id,
-        });
-        const refreshToken = await tokenService.createRefreshToken({
-          uid: userInfo.id,
-          email: userInfo.email,
-        });
-        const refreshTokenDoc = await tokenService.saveTokenToDB(
-          userInfo.id,
-          refreshToken
-          );
-        if (accessToken && refreshTokenDoc) {
+        const tokens = await tokenService.getTokens(userInfo.id, userInfo.email);
+        if (tokens) {  
           res.json({
             status: "ok",
             userInfo,
-            tokens: { accessToken, refreshToken },
+            tokens,
           });
         }
       }
@@ -43,7 +33,19 @@ class AuthController {
   async singnUp(req: Request, res: Response, next: NextFunction) {
     console.log("sigUp: ", req.body)
     try{
-
+      const { email, password, name } = req.body;
+      const userDoc = await userService.registration(email, password, name);
+      if(userDoc) {
+        const { id, email, name } = userDoc;
+        const tokens = await tokenService.getTokens(id, email);
+        if(tokens) {
+          res.json({
+            status: 'ok',
+            userInfo: { id, name, email, picture: null },
+            tokens,
+          })
+        }
+      }
     }catch(err){
       next(err);
     }

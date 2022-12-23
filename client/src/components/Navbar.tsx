@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 
 import { IoMdAdd, IoMdSearch } from "react-icons/io";
 import {AppContext} from 'context';
+import NoAvatar from "components/NoAvatar/NoAvatar";
 
 type User = {
   id: string;
@@ -34,9 +35,17 @@ const Navbar: FC<NavProps> = ({ user }) => {
           onFocus={() => navigate("/search")}
         />
       </div>
-      <div className="flex gap-3">
+      <div className="flex justify-center items-center gap-3">
         <Link to={`/user-profile/:${user.id}`} className="hidden md:block">
-          <img src={user.picture} alt="user-img" className="w-10 rounded-full"/>
+          {user.picture ? (
+                <img
+                  src={user.picture}
+                  alt="userImage"
+                  className="w-10 rounded-full"
+                />
+              ) : (
+                <NoAvatar theme={'light'} />
+              )}
         </Link>
         <Link to={'/create-pin'} className="bg-black text-white rounded-lg w-12 h-12 md:w-14 md:h-14 flex justify-center items-center">
           <IoMdAdd />
