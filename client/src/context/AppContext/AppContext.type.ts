@@ -6,6 +6,8 @@ type Modal = {
 }
 
 type TAppContext = {
+  isAvatar: boolean;
+  setIsAvatar: (data: boolean) => void;
   isModal: boolean;
   setModal: (data: Modal) => void;
   searchTerm: string;

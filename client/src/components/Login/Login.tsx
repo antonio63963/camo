@@ -14,8 +14,6 @@ type LoginProps = {
   setName: (value: string) => void;
   email: string;
   setEmail: (value: string) => void;
-  wrongImageType: boolean;
-  uploadAvatar: (e: React.ChangeEvent<HTMLInputElement>) => void;
   password: string;
   setPassword: (value: string) => void;
   repeatPassword: string;
@@ -31,8 +29,6 @@ const Login: FC<LoginProps> = ({
   setName,
   email,
   setEmail,
-  wrongImageType,
-  uploadAvatar,
   password,
   setPassword,
   repeatPassword,
@@ -71,24 +67,6 @@ const Login: FC<LoginProps> = ({
       <p className="text-red-500 text-basic text-center mt-2">
         {errorsFields.email}
       </p>
-
-      {!isLogin && (
-        <label style={{ lineHeight: "10px" }}>
-          <div className="text-white flex items-center mt-2 border cursor-pointer p-2 rounded">
-            <AiOutlineCloudUpload />
-            <span className="ml-2 text-base">Avatar</span>
-          </div>
-          <input
-            type="file"
-            name="upload-image"
-            onChange={(e) => uploadAvatar(e)}
-            className="w-0 h-0"
-          />
-          {wrongImageType && (
-            <p className="text-red-600 mb-2">Wrong image type!</p>
-          )}
-        </label>
-      )}
 
       <input
         type="password"

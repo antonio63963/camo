@@ -1,5 +1,5 @@
 import Login from "components/Login/Login";
-import { FC, useCallback, useEffect, useState } from "react";
+import { FC, useCallback, useState } from "react";
 
 import validation from "services/validation.service";
 
@@ -10,10 +10,8 @@ const LoginContainer: FC<LoginProps> = ({ onLogin, onSignUp }) => {
 
   const [name, setName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
-  const [imageAsset, setImageAsset] = useState<File | null>(null);
   const [password, setPassword] = useState<string>("");
   const [repeatPassword, setRepeatPassword] = useState<string>("");
-  const [wrongImageType, setWrongImageType] = useState<boolean>(false);
 
   const [errorsFields, setErrorsFields] = useState({
     name: "",
@@ -21,24 +19,6 @@ const LoginContainer: FC<LoginProps> = ({ onLogin, onSignUp }) => {
     password: "",
     repeatPassword: "",
   });
-
-  function uploadAvatar(e: React.ChangeEvent<HTMLInputElement>) {
-    if (!e.target.files) return;
-    const { type } = e.target?.files[0];
-    console.log("FILE: ", e.target.files[0]);
-    if (
-      type === "image/png" ||
-      type === "image/svg" ||
-      type === "image/jpeg" ||
-      type === "image/gif" ||
-      type === "image/tiff"
-    ) {
-      setWrongImageType(false);
-      setImageAsset(e.target?.files[0]);
-    } else {
-      setWrongImageType(true);
-    }
-  }
 
   const validationSignUpFields = useCallback(() => {
     const nameInput = validation
@@ -99,9 +79,6 @@ const LoginContainer: FC<LoginProps> = ({ onLogin, onSignUp }) => {
       formData.append("email", email);
       formData.append("password", password);
       formData.append("repeatPassword", repeatPassword);
-      if (imageAsset) {
-        formData.append("imageAsset", imageAsset);
-      }
       const user = {
         name,
         email,
@@ -114,22 +91,8 @@ const LoginContainer: FC<LoginProps> = ({ onLogin, onSignUp }) => {
       if (!validationLoginFields()) return;
       onLogin({ email, password });
     }
-  }, [
-    email,
-    imageAsset,
-    isLogin,
-    name,
-    onLogin,
-    onSignUp,
-    password,
-    repeatPassword,
-    validationLoginFields,
-    validationSignUpFields,
-  ]);
+  }, [email, isLogin, name, onLogin, onSignUp, password, repeatPassword, validationLoginFields, validationSignUpFields]);
 
-  useEffect(() => {
-    console.log(imageAsset);
-  }, [imageAsset]);
 
   return (
     <Login
@@ -143,8 +106,6 @@ const LoginContainer: FC<LoginProps> = ({ onLogin, onSignUp }) => {
       setPassword={setPassword}
       setRepeatPassword={setRepeatPassword}
       onSubmit={onSubmit}
-      wrongImageType={wrongImageType}
-      uploadAvatar={uploadAvatar}
       setIsLogin={setIsLogin}
       errorsFields={errorsFields}
     />

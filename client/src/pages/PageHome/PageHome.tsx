@@ -1,8 +1,9 @@
-import React, { FC, useState, useRef, useEffect } from "react";
+import React, { FC, useState, useRef, useEffect, useContext } from "react";
 import { Link, Route, Routes, useNavigate } from "react-router-dom";
 import { HiMenu } from "react-icons/hi";
 import { AiFillCloseCircle, AiOutlineCloudUpload } from "react-icons/ai";
 
+import { AppContext } from "context";
 import { Sidebar, UploadAvatar, UserProfile } from "../../components";
 import { PinsContainer } from "containers";
 import logo from "assets/logo.png";
@@ -12,9 +13,9 @@ import { User } from "./PageHome.type";
 import NoAvatar from "components/NoAvatar/NoAvatar";
 
 const PageHome: FC = () => {
+  const { isAvatar, setIsAvatar } = useContext(AppContext);
   const navigate = useNavigate();
   const [toggleSidebar, setToggelSidebar] = useState<boolean>(false);
-  const [isAvatar, setIsAvatar] = useState<boolean>(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const userStorage = localStorage.getItem("userInfo");
@@ -26,8 +27,7 @@ const PageHome: FC = () => {
     if (null != scrollRef.current) {
       scrollRef.current.scrollTo(0, 0);
     }
-    setIsAvatar(!!userInfo.picture);
-  }, [userInfo.picture]);
+  }, []);
 
   return (
     <div className="flex bg-gray-50 md:flex-row flex-col h-screen transition-height duration-75 ease-out">
@@ -53,14 +53,17 @@ const PageHome: FC = () => {
                   className="w-10 rounded-full"
                 />
               ) : (
-                <NoAvatar theme={'dark'} />
+                <NoAvatar theme={"dark"} />
               )}
             </Link>
           )}
-          {!isAvatar && <UploadAvatar  closeModal={() => {
-            setIsAvatar(true);
-            console.log("UploadAvatar", isAvatar);
-          }}/>}
+          {!isAvatar && (
+            <UploadAvatar
+              closeModal={() => {
+                setIsAvatar(true);
+              }}
+            />
+          )}
         </div>
         {toggleSidebar && (
           <div className="fixed w-4/5 bg-black h-screen overflow-y-auto shadow-md z-10 animate-slide-in">

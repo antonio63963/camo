@@ -19,10 +19,12 @@ import Modal from "components/Modal";
 
 const App: FC<AppProps> = function App({ history }) {
   const [searchTerm, setSearchTerm] = useState<string>("");
-  const [{isModal, title: modalTitle, message: modalMessage}, setModal] = useState({ isModal: false, title: "", message: "" });
+  const [{ isModal, title: modalTitle, message: modalMessage }, setModal] =
+    useState({ isModal: false, title: "", message: "" });
   const [isAuthenticated, setIsUserAuthenticated] = useState(
     !!storage.getTokens()
   );
+  const [isAvatar, setIsAvatar] = useState<boolean>(false);
 
   const setIsAuthenticated = useCallback(
     (isAuthenticated: boolean, tokens?: Tokens) => {
@@ -44,6 +46,9 @@ const App: FC<AppProps> = function App({ history }) {
     if (!isAuthenticated) {
       history.push(routes.AUTH_SIGNIN);
     }
+
+    const userInfo = storage.getUserInfo();
+    setIsAvatar(!!userInfo?.picture);
   }, [history, isAuthenticated]);
 
   return (
@@ -53,14 +58,25 @@ const App: FC<AppProps> = function App({ history }) {
         setIsAuthenticated,
       }}
     >
-      <AppContext.Provider value={{isModal, setModal, searchTerm, setSearchTerm }}>
-      {isModal && (
-        <Modal
-          title={modalTitle}
-          message={modalMessage}
-          closeModal={() => setModal({isModal: false, title: '', message: ''})}
-        />
-      )}
+      <AppContext.Provider
+        value={{
+          isAvatar,
+          setIsAvatar,
+          isModal,
+          setModal,
+          searchTerm,
+          setSearchTerm,
+        }}
+      >
+        {isModal && (
+          <Modal
+            title={modalTitle}
+            message={modalMessage}
+            closeModal={() =>
+              setModal({ isModal: false, title: "", message: "" })
+            }
+          />
+        )}
         <Routes>
           <Route
             path="/404"
