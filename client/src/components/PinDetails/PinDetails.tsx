@@ -75,9 +75,10 @@ const PinDetails: FC<PinDetailsProps> = ({
             >
               <MdDownloadForOffline />
             </a>
-            <span>{pin.category}</span>
+            <div className="flex items-center py-2 px-3 bg-indigo-500 text-white rounded-full">
+              <span className="leading-3">{pin.category}</span>
+            </div>
           </div>
-          {/* <a href={pinDetails?.destination} target="_blank" rel="noopener"> */}
           <div>
             <h1 className="text-4xl font-bold break-words mt-3">
               {pin?.title}
