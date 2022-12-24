@@ -1,6 +1,5 @@
 import React, { FC, useCallback, useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { v4 as uuid } from "uuid";
 
 import { MdDownloadForOffline } from "react-icons/md";
 import { AiTwotoneDelete, AiFillLike, AiOutlineLike } from "react-icons/ai";
@@ -23,6 +22,7 @@ type User = {
   email: string;
   name: string;
   picture?: string;
+  avatar?: string;
 };
 type DataPin = {
   id: string;
@@ -43,7 +43,7 @@ const Pin: FC<PinProps> = ({
   user,
   deletePinFromArray,
 }) => {
-  const { setModal } = useContext(AppContext);
+  const { avatar, setModal } = useContext(AppContext);
   const navigate = useNavigate();
   const [postHovered, setPostHovered] = useState<boolean>(false);
   const [isAlreadyliked, setIsAlreadyliked] = useState<boolean>(
@@ -174,10 +174,9 @@ const Pin: FC<PinProps> = ({
         to={`user-profile/${postedBy?.id}`}
         className="flex gap-2 mt-2 items-center mt-2"
       >
-
-        {postedBy.picture ? (
+        {postedBy.picture || postedBy.avatar ? (
             <img
-              src={postedBy.picture}
+              src={postedBy.picture ?? avatar}
               alt="userProfile"
               className="w-8 h-8 rounded-full object-cover"
             />

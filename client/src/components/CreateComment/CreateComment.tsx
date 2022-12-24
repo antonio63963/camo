@@ -1,12 +1,15 @@
 import NoAvatar from "components/NoAvatar/NoAvatar";
-import React, { FC } from "react";
+import React, { FC, useContext } from "react";
 import { Link } from "react-router-dom";
+
+import { AppContext } from 'context';
 
 type User = {
   id: string;
   name: string;
   email: string;
-  picture: string;
+  picture?: string;
+  avatar?: string;
 };
 
 type CreateCommentProps = {
@@ -26,6 +29,7 @@ const CreateComment: FC<CreateCommentProps> = ({
   isAddComment,
   errorComment,
 }) => {
+  const { avatar } = useContext(AppContext);
   return (
     <>
       <div className="mt-6 flex fex-wrap gap-3 max-sm:flex-col">
@@ -34,9 +38,9 @@ const CreateComment: FC<CreateCommentProps> = ({
             to={`/user-profile/:${user.id}`}
             className="flex mr-2 items-center bg-white rounded-lg"
           >
-            {user.picture ? (
+            {user.picture || avatar ? (
               <img
-                src={user.picture}
+                src={user.picture ?? avatar}
                 alt="userImage"
                 className="w-10 rounded-full"
               />

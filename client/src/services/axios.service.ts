@@ -19,7 +19,6 @@ class AxiosService {
       return response;
     },
     (error: AxiosError) => {
-      console.log(error)
       if (error.response) {
         console.log('Axios: ', error.response.status, history.location.pathname)
 

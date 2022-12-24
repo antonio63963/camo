@@ -13,7 +13,7 @@ import { User } from "./PageHome.type";
 import NoAvatar from "components/NoAvatar/NoAvatar";
 
 const PageHome: FC = () => {
-  const { isAvatar, setIsAvatar } = useContext(AppContext);
+  const { avatar, isAvatar, setIsAvatar } = useContext(AppContext);
   const navigate = useNavigate();
   const [toggleSidebar, setToggelSidebar] = useState<boolean>(false);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -46,9 +46,9 @@ const PageHome: FC = () => {
           </Link>
           {userInfo?.id && (
             <Link to={`user-profile/${userInfo?.id}`}>
-              {userInfo.picture ? (
+              {userInfo.picture || avatar ? (
                 <img
-                  src={userInfo.picture}
+                  src={userInfo.picture ?? avatar}
                   alt="userImage"
                   className="w-10 rounded-full"
                 />
@@ -67,7 +67,7 @@ const PageHome: FC = () => {
         </div>
         {toggleSidebar && (
           <div className="fixed w-4/5 bg-black h-screen overflow-y-auto shadow-md z-10 animate-slide-in">
-            <div className="absolute w-full flex justify-end items-center p-2">
+            <div className="absolute w-full flex justify-end items-center p-2 text-gray-50">
               <AiFillCloseCircle
                 fontSize={30}
                 className="cursor-pointer"

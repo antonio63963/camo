@@ -17,8 +17,7 @@ const storage = multer.diskStorage({
     const filePath = `${uuidv4()}_${Date.now()}.${typeFile}`;
 
     cb(null, `${filePath}`);
-    req.params.photoPath += `,${filePath}`;
-    console.log(req.params)
+    req.body.avatarPath = `/avatars/${filePath}`; 
   },
 });
 

@@ -50,6 +50,7 @@ const PageAuthContainer: FC = () => {
   const onSignUp = async (userData: UserData) => {
     try {
       const { data } = await axios.post("/auth/signUp", userData);
+      console.log(data)
       onServerResponse(data, "Sign Up was failed!");
     } catch (err) {
       catchErrors(err);

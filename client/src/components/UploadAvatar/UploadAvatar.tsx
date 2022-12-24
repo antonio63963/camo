@@ -1,12 +1,17 @@
-import { FC, useState } from "react";
+import { FC, useCallback, useState, useContext } from "react";
+import axios from "axios";
 import { AiOutlineCloudUpload } from "react-icons/ai";
 import { MdDelete, MdSave } from "react-icons/md";
+
+import { AppContext } from "context";
+import storageService from "services/storage.service";
 
 type UploadProps = {
   closeModal: () => void;
 };
 
 const UploadAvatar: FC<UploadProps> = ({ closeModal }) => {
+  const { setAvatar } = useContext(AppContext);
   const [imageAsset, setImageAsset] = useState<File | null>(null);
   const [wrongImageType, setWrongImageType] = useState<boolean>(false);
 
@@ -26,7 +31,21 @@ const UploadAvatar: FC<UploadProps> = ({ closeModal }) => {
     } else {
       setWrongImageType(true);
     }
-  }
+  };
+
+  const sendImage = useCallback(async(formData: FormData) => {
+    try{
+      const {data: {avatar}} = await axios.put('/user/avatar', formData);
+      if(avatar) {
+        console.log('Image Avatar: ', avatar);
+        storageService.updateAvatar(avatar);
+        setAvatar(avatar);
+        closeModal();
+      }
+    } catch(err) {
+
+    }
+  }, [closeModal, setAvatar]);
   return (
     <div className={`absolute ${imageAsset ? 'bg-black' : 'bg-red-500'} top-10 right-10 rounded py-2 px-4 z-20 shadow-lg`}>
       {!imageAsset ? (
@@ -69,7 +88,7 @@ const UploadAvatar: FC<UploadProps> = ({ closeModal }) => {
           <img
             src={URL.createObjectURL(imageAsset)}
             alt="uploaded-pic"
-            className="object-fit w-20 rounded-full"
+            className="object-fit w-20 h-20 rounded-full"
             // style={{width: "50px"}}
           />
           <div>
@@ -83,7 +102,11 @@ const UploadAvatar: FC<UploadProps> = ({ closeModal }) => {
             <button
               type="button"
               className="p-3 mt-3 rounded-full bg-white text-xl cursor-pointer outline-none hover:shadow-md transition-all duration-500 ease-in-out"
-              onClick={() => {}}
+              onClick={() => {
+                const formData = new FormData();
+                formData.append('imageAsset', imageAsset);
+                sendImage(formData);
+              }}
             >
               <MdSave />
             </button>

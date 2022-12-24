@@ -10,7 +10,8 @@ type UserInfo = {
   id: string;
   name: string;
   email: string;
-  picture: string;
+  picture?: string;
+  avatar?: string;
 };
 
 class JwtService {
@@ -35,9 +36,19 @@ class JwtService {
   }
 
   saveUserInfo(userInfo: UserInfo) {
-    localStorage.setItem('userInfo', JSON.stringify(userInfo))
+    if(userInfo.avatar) {
+      userInfo.avatar = `${process.env.REACT_APP_API_BASE_URL}${userInfo.avatar}`;
+    };
+
+    localStorage.setItem(USER_INFO, JSON.stringify(userInfo));
     // localStorage.setItem(USER_INFO, JSON.stringify(userInfo));
     console.log(this.getUserInfo());
+  }
+
+  updateAvatar(avatar: string) {
+    const userInfo = this.getUserInfo();
+    userInfo.avatar = `${process.env.REACT_APP_API_BASE_URL}${avatar}`;
+    localStorage.setItem(USER_INFO, JSON.stringify(userInfo));
   }
 
   clearStorage() {

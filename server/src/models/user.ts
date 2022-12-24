@@ -25,6 +25,9 @@ const generalSchema = new Schema<User>(
     picture: {
       type: Schema.Types.String,
     },
+    avatar: {
+      type: Schema.Types.String,
+    },
     googleId: {
       type: Schema.Types.String,
       required: function() {

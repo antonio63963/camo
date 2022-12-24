@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import userService from "services/auth.service";
+import userService from "services/user.service";
 import tokenService from "services/token.service";
 
 class AuthController {
@@ -8,8 +8,11 @@ class AuthController {
       const user = res.locals.auth;
       const userInfo = await userService.googleAuth(user);
       if (userInfo) {
-        const tokens = await tokenService.getTokens(userInfo.id, userInfo.email);
-        if (tokens) {  
+        const tokens = await tokenService.getTokens(
+          userInfo.id,
+          userInfo.email
+        );
+        if (tokens) {
           res.json({
             status: "ok",
             userInfo,
@@ -21,32 +24,46 @@ class AuthController {
       next(err);
     }
   }
+
   async signin(req: Request, res: Response, next: NextFunction) {
     try {
       const { email, password } = req.body;
-      console.log("sigIn: ", req.body)
+      console.log("sigIn: ", req.body);
+      const userDoc = await userService.login(email, password);
+      if (userDoc) {
+        const { id, email, name, avatar } = userDoc;
+        const tokens = await tokenService.getTokens(id, email);
+        if (tokens) {
+          res.json({
+            status: "ok",
+            userInfo: { id, name, email, avatar },
+            tokens,
+          });
+        }
+      }
     } catch (err) {
       next(err);
     }
   }
 
   async singnUp(req: Request, res: Response, next: NextFunction) {
-    console.log("sigUp: ", req.body)
-    try{
+    console.log("sigUp: ", req.body);
+    try {
       const { email, password, name } = req.body;
       const userDoc = await userService.registration(email, password, name);
-      if(userDoc) {
-        const { id, email, name } = userDoc;
+      console.log("new user: ", userDoc);
+      if (userDoc) {
+        const { id, email, name, avatar } = userDoc;
         const tokens = await tokenService.getTokens(id, email);
-        if(tokens) {
+        if (tokens) {
           res.json({
-            status: 'ok',
-            userInfo: { id, name, email, picture: null },
+            status: "ok",
+            userInfo: { id, name, email, avatar },
             tokens,
-          })
+          });
         }
       }
-    }catch(err){
+    } catch (err) {
       next(err);
     }
   }

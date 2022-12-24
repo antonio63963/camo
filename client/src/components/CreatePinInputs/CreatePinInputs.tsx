@@ -1,14 +1,17 @@
+import React, { FC, useContext } from "react";
+
 import NoAvatar from "components/NoAvatar/NoAvatar";
 import SaveButton from "components/SaveButton";
-import React, { FC } from "react";
 
+import { AppContext } from 'context';
 import { categories } from "utils/data";
 
 type User = {
   id: string;
   name: string;
   email: string;
-  picture: string;
+  picture?: string;
+  avatar?: string;
 };
 type InputProps = {
   title: string;
@@ -31,6 +34,7 @@ const CreatePinInputs: FC<InputProps> = ({
   errorMessages,
   savePin,
 }) => {
+  const { avatar } = useContext(AppContext);
   return (
     <div className="flex flex-col justify-between xl:ml-5 flex-1">
       <div className="flex flex-col">
@@ -49,9 +53,9 @@ const CreatePinInputs: FC<InputProps> = ({
         </div>
         {user && (
           <div className="flex gap-2 my-2 items-center gb-white rounded-lg">
-            {user.picture ? (
+            {user.picture || avatar ? (
                 <img
-                  src={user.picture}
+                  src={user.picture ?? avatar}
                   alt="userImage"
                   className="w-10 rounded-full"
                 />

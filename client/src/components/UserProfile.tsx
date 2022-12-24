@@ -19,6 +19,7 @@ type User = {
   email: string;
   name: string;
   picture?: string;
+  avatar?: string;
 };
 type Pin = {
   id: string;
@@ -104,7 +105,7 @@ const UserProfile: FC = () => {
               alt="banner"
             />
             <img
-              src={user.picture}
+              src={user.picture ?? user.avatar}
               className="rounded-full w-20 h-20 -mt-10 shadow-xl object-cover"
               alt="user"
             />

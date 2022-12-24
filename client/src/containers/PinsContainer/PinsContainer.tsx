@@ -9,7 +9,8 @@ type UserInfo = {
   id: string;
   name: string;
   email: string;
-  picture: string;
+  picture?: string;
+  avatar?: string;
 };
 
 type PinProps = {

@@ -24,7 +24,8 @@ const App: FC<AppProps> = function App({ history }) {
   const [isAuthenticated, setIsUserAuthenticated] = useState(
     !!storage.getTokens()
   );
-  const [isAvatar, setIsAvatar] = useState<boolean>(false);
+  const [avatar, setAvatar] = useState<string>("");
+  const [isAvatar, setIsAvatar] = useState<boolean>(true);
 
   const setIsAuthenticated = useCallback(
     (isAuthenticated: boolean, tokens?: Tokens) => {
@@ -48,7 +49,10 @@ const App: FC<AppProps> = function App({ history }) {
     }
 
     const userInfo = storage.getUserInfo();
-    setIsAvatar(!!userInfo?.picture);
+    setIsAvatar(userInfo?.picture || userInfo?.avatar);
+    if (userInfo?.avatar) {
+      setAvatar(userInfo.avatar);
+    }
   }, [history, isAuthenticated]);
 
   return (
@@ -60,6 +64,8 @@ const App: FC<AppProps> = function App({ history }) {
     >
       <AppContext.Provider
         value={{
+          avatar,
+          setAvatar,
           isAvatar,
           setIsAvatar,
           isModal,

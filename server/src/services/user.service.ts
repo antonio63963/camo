@@ -46,7 +46,7 @@ class UserService {
       );
     } else {
       const hashPassword = await bcrypt.hash(password, 3);
-      const user = await UserModel.create({ email, password: hashPassword, name });
+      const user = await UserModel.create({ email, password: hashPassword, name, avatar: '' });
       return user;
     }
   }
@@ -57,12 +57,16 @@ class UserService {
     if (!user) {
       throw ApiError.UnauthorizedError();
     }
-
     const isPassEquals = await bcrypt.compare(password, user.password);
-
     if (!isPassEquals) {
       throw ApiError.UnauthorizedError();
     }
+    return user;
+  }
+
+  async setAvatar(uid: string, avatar: string) {
+    console.log('Avatar: ', avatar, 'uid: ', uid);
+    return UserModel.findOneAndUpdate({_id: uid}, {avatar}, {new: true});
   }
 }
 

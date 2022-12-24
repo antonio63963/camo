@@ -5,12 +5,14 @@ import { IoMdAdd, IoMdSearch } from "react-icons/io";
 import { AppContext } from "context";
 import NoAvatar from "components/NoAvatar/NoAvatar";
 import UploadAvatar from "components/UploadAvatar/UploadAvatar";
+import { env } from "process";
 
 type User = {
   id: string;
   name: string;
   email: string;
-  picture: string;
+  picture?: string;
+  avatar?: string;
 };
 
 type NavProps = {
@@ -18,12 +20,11 @@ type NavProps = {
 };
 
 const Navbar: FC<NavProps> = ({ user }) => {
-  const { isAvatar, setIsAvatar, searchTerm, setSearchTerm } =
+  const { avatar, isAvatar, setIsAvatar, searchTerm, setSearchTerm } =
     useContext(AppContext);
   const navigate = useNavigate();
 
   if (!user) return null;
-
   return (
     <div className="flex gap-2 md:gap-5 w-full pb-7">
       <div className="flex justify-start items-center w-full px-2 rounded-md bg-white border-none outline-none focus-within:shadow-sm">
@@ -40,9 +41,9 @@ const Navbar: FC<NavProps> = ({ user }) => {
       <div className="flex justify-center items-center gap-3">
         <div className="relative">
           <Link to={`/user-profile/:${user.id}`} className="hidden md:block">
-            {user.picture ? (
+            {(user.picture || avatar) ? (
               <img
-                src={user.picture}
+                src={user.picture ?? avatar}
                 alt="userImage"
                 className="w-10 rounded-full"
               />
