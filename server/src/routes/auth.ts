@@ -7,7 +7,7 @@ import {uploadFile, upload} from 'middlewares/upload';
 const authRouter = express.Router();
 
 authRouter.post('/signin', AuthController.signin);
-authRouter.post('/signUp', AuthController.singnUp, uploadFile);
+authRouter.post('/signUp', AuthController.singnUp);
 authRouter.post('/googleAuth', checkGoogle, AuthController.googleAuth);
 authRouter.post('/logout', AuthController.logout);
 

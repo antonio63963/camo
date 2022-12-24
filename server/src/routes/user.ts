@@ -1,9 +1,11 @@
 import express from 'express';
 
 import UserController from 'controllers/UserController';
+import { uploadFile } from 'middlewares/upload';
 
-const authRouter = express.Router();
+const userRouter = express.Router();
 
-authRouter.get('/current', UserController.current);
+userRouter.get('/', UserController.index);
+userRouter.put('/avatar', uploadFile, UserController.changeAvatar);
 
-export default authRouter;
+export default userRouter;

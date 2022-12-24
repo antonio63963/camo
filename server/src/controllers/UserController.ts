@@ -1,23 +1,30 @@
-import { Request, Response } from 'express';
-import tokenService from 'services/token.service';
+import { NextFunction, Request, Response } from "express";
+import userService from "services/user.service";
+import ApiError from "lib/ApiError";
 
 class UserController {
-  async current(req: Request, res: Response) {
-    const token = req.headers.authorization.split(' ')[1];
+  async index(req: Request, res: Response, next: NextFunction) {
+    try {
+    } catch (err) {
+      next(err);
+    }
+  }
 
-    res.json({
-      user: { isTeacher: token === 'teacher' ? true : false },
-    })
-    // const decodedToken = await tokenService.verifyAccessToken(token);
+  async changeAvatar(req: Request, res: Response, next: NextFunction) {
+    const { uid } = res.locals.auth;
+    const avatar = req.body.avatarPath;
 
-    // setTimeout(() => {
-    //   res.json({
-    //     user: {
-    //       isTeacher: decodedToken.isTeacher,
-    //     },
-    //   });
-    // }, 500);
-  };
-};
+    try {
+      const updatedDoc = await userService.setAvatar(uid, avatar);
+      if(updatedDoc.avatar) {
+        res.json({ avatar: updatedDoc.avatar });
+      } else {
+        throw ApiError.ServerError();
+      }
+    } catch (err) {
+      next(err);
+    }
+  }
+}
 
 export default new UserController();
