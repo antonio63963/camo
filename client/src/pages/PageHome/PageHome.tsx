@@ -1,4 +1,11 @@
-import React, { FC, useState, useRef, useEffect, useContext } from "react";
+import React, {
+  FC,
+  useState,
+  useRef,
+  useEffect,
+  useContext,
+  useCallback,
+} from "react";
 import { Link, Route, Routes, useNavigate } from "react-router-dom";
 import { HiMenu } from "react-icons/hi";
 import { AiFillCloseCircle, AiOutlineCloudUpload } from "react-icons/ai";
@@ -11,6 +18,8 @@ import camoLogo from "assets/camoLogo.png";
 
 import { User } from "./PageHome.type";
 import NoAvatar from "components/NoAvatar/NoAvatar";
+import axios from "axios";
+import storageService from "services/storage.service";
 
 const PageHome: FC = () => {
   const { avatar, isAvatar, setIsAvatar } = useContext(AppContext);
@@ -23,6 +32,12 @@ const PageHome: FC = () => {
     ? JSON.parse(userStorage)
     : navigate("/auth/login");
 
+  const onLogout = useCallback(async () => {
+    axios.get("/auth/logout");
+    storageService.clearStorage();
+    navigate("/", { replace: true });
+  }, [navigate]);
+
   useEffect(() => {
     if (null != scrollRef.current) {
       scrollRef.current.scrollTo(0, 0);
@@ -32,7 +47,7 @@ const PageHome: FC = () => {
   return (
     <div className="flex bg-gray-50 md:flex-row flex-col h-screen transition-height duration-75 ease-out">
       <div className="hidden md:flex h-screen flex-initial">
-        <Sidebar user={userInfo && userInfo} />
+        <Sidebar user={userInfo && userInfo} onLogout={onLogout} />
       </div>
       <div className="md:hidden flex flex-row bg-black">
         <div className="relative p-2 w-full text-gray-50 flex flex-row justify-between items-center shadow-md">
@@ -75,6 +90,7 @@ const PageHome: FC = () => {
               />
             </div>
             <Sidebar
+              onLogout={onLogout}
               user={userInfo && userInfo}
               onCloseSidebar={() => setToggelSidebar(false)}
             />

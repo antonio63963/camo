@@ -37,9 +37,8 @@ const UploadAvatar: FC<UploadProps> = ({ closeModal }) => {
     try{
       const {data: {avatar}} = await axios.put('/user/avatar', formData);
       if(avatar) {
-        console.log('Image Avatar: ', avatar);
         storageService.updateAvatar(avatar);
-        setAvatar(avatar);
+        setAvatar(`${process.env.REACT_APP_API_BASE_URL}${avatar}`);
         closeModal();
       }
     } catch(err) {
@@ -71,7 +70,6 @@ const UploadAvatar: FC<UploadProps> = ({ closeModal }) => {
               style={{ height: "42px" }}
               className="text-white flex items-center mt-2 border cursor-pointer p-2 rounded shadow-sm"
               onClick={(e) => {
-                console.log(e.target);
                 e.stopPropagation();
                 closeModal();
               }}
