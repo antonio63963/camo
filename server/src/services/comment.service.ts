@@ -1,6 +1,7 @@
 import CommentModel from 'models/comment';
 import serviceUtils from './serviceUtils';
 import { Comment } from 'models/comment.type';
+import ApiError from 'lib/ApiError';
 
 class CommentService {
 
@@ -8,6 +9,7 @@ class CommentService {
     const comment = new CommentModel();
     serviceUtils.createDoc(comment, commentData);
     const { _id } = await comment.save();
+    if(!_id) throw ApiError.ServerError();
     return _id;
   }
 

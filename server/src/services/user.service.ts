@@ -35,10 +35,15 @@ class UserService {
       console.log("GOOO: ", candidate);
       return candidate;
     }
-    return await this.createUser(userData);
+    const newUserDoc = await this.createUser(userData);
+    if (!newUserDoc) {
+      throw ApiError.ServerError();
+    } else {
+      return newUserDoc;
+    }
   }
 
-  async registration(email: string, password: string, name: string) {
+  async signUp(email: string, password: string, name: string) {
     const candidate = await UserModel.findOne({ email });
     if (candidate) {
       throw ApiError.BadRequestError(
@@ -52,6 +57,9 @@ class UserService {
         name,
         avatar: "",
       });
+      if (!user) {
+        throw ApiError.ServerError();
+      }
       return user;
     }
   }
@@ -70,8 +78,9 @@ class UserService {
   }
 
   async setAvatar(uid: string, avatar: string) {
-    console.log("Avatar: ", avatar, "uid: ", uid);
-    return UserModel.findOneAndUpdate({ _id: uid }, { avatar }, { new: true });
+    const updatedDoc = await UserModel.findOneAndUpdate({ _id: uid }, { avatar }, { new: true });
+    if(!updatedDoc) throw ApiError.ServerError();
+    return updatedDoc.avatar;
   }
 
   async refresh(refreshToken: string) {
@@ -80,7 +89,7 @@ class UserService {
     }
     const tokenDoc = await tokenService.verifyToken(refreshToken);
     const tokenChecked = await tokenService.findToken(refreshToken);
-    if(!tokenDoc || !tokenChecked) {
+    if (!tokenDoc || !tokenChecked) {
       throw ApiError.UnauthorizedError();
     } else {
       return tokenService.generateTokens(tokenDoc.uid, tokenDoc.email);

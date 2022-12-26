@@ -1,6 +1,6 @@
 import express from 'express';
 
-import AuthController from 'controllers/AuthController';
+import AuthController from 'controllers/UserController';
 import checkGoogle from 'middlewares/checkGoogle';
 import checkAuth from 'middlewares/checkAuth';
 

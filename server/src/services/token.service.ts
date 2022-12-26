@@ -1,43 +1,26 @@
 import jwt, { JwtPayload } from "jsonwebtoken";
-import uniqid from "uniqid";
 
 import TokenModel from "models/token";
 import KeysService from "services/keys.service";
 import ApiError from "lib/ApiError";
 
-type JWT = {
-  userId: string;
-  email: string;
-  iat: number;
-  exp: number;
-};
-
 class TokenService {
   async createAccessToken(payload: { uid: string }) {
-    try {
-      const privKey = await KeysService.getPrivateKey();
-      const token = jwt.sign(payload, privKey, {
-        algorithm: "RS256",
-        expiresIn: "5s",
-      });
-      return token;
-    } catch (err) {
-      console.log("JWT create failed...");
-    }
+    const privKey = await KeysService.getPrivateKey();
+    const token = jwt.sign(payload, privKey, {
+      algorithm: "RS256",
+      expiresIn: "48h",
+    });
+    return token;
   }
 
   async createRefreshToken(payload: { uid: string; email: string }) {
     const privKey = await KeysService.getPrivateKey();
-    try {
-      const refreshToken = jwt.sign(payload, privKey, {
-        algorithm: "RS256",
-        expiresIn: "48d",
-      });
-      return refreshToken;
-    } catch (err) {
-      console.log("ERROR: ", err);
-    }
-    return null;
+    const refreshToken = jwt.sign(payload, privKey, {
+      algorithm: "RS256",
+      expiresIn: "48d",
+    });
+    return refreshToken;
   }
 
   async findToken(refreshToken: string) {
@@ -57,8 +40,7 @@ class TokenService {
     if (refreshTokenDoc && accessToken) {
       return { accessToken, refreshToken };
     } else {
-      console.log("Tokens were not built!");
-      return null;
+      throw ApiError.ServerError();
     }
   }
 
@@ -68,15 +50,13 @@ class TokenService {
 
   async verifyToken(token: string) {
     const pubKey = await KeysService.getPublicKey();
-    try {
-      return jwt.verify(token, pubKey) as { uid: string; email: string };
-    } catch (err) {
-      return null;
-    }
+    return jwt.verify(token, pubKey) as { uid: string; email: string };
   }
 
   async removeTokens(uid: string) {
-    return await TokenModel.deleteMany({ uid }, { delete: true });
+    const tokenDoc = await TokenModel.deleteMany({ uid }, { delete: true });
+    if (!tokenDoc) throw ApiError.ServerError();
+    return tokenDoc;
   }
 }
 

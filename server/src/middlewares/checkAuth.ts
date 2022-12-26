@@ -9,7 +9,6 @@ const checkAuth = async (req: Request, res: Response, next: NextFunction) => {
     if (accessToken) {
       const decodedAccessToken = await tokenService.verifyToken(accessToken);
       if(decodedAccessToken) {
-        console.log("TEST: ", decodedAccessToken);
         res.locals.auth = decodedAccessToken;
         next()
       }else {
