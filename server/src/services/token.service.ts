@@ -18,7 +18,7 @@ class TokenService {
       const privKey = await KeysService.getPrivateKey();
       const token = jwt.sign(payload, privKey, {
         algorithm: "RS256",
-        expiresIn: "1m",
+        expiresIn: "5s",
       });
       return token;
     } catch (err) {
@@ -40,28 +40,12 @@ class TokenService {
     return null;
   }
 
-  async checkRefreshToken(refreshToken: string) {
+  async findToken(refreshToken: string) {
     const { token } = await TokenModel.findOne({ refreshToken: refreshToken });
-    return token ? (this.verifyToken(token) as JwtPayload) : null;
+    return token;
   }
 
-  // async updateTokens(uid: string, accessToken: string, refreshToken: string) {
-  //   const newAccessToken = await this.createAccessToken({ uid });
-  //   const newRefreshToken = this.createRefreshToken();
-
-  //   const doc = await TokenModel.updateOne(
-  //     { refreshToken },
-  //     { refreshToken: newRefreshToken }
-  //   );
-  //   if (doc) {
-  //     return {
-  //       accessToken: newAccessToken,
-  //       refreshToken: refreshToken,
-  //     };
-  //   }
-  // }
-
-  async getTokens(uid: string, email: string) {
+  async generateTokens(uid: string, email: string) {
     const accessToken = await this.createAccessToken({
       uid,
     });
@@ -73,7 +57,7 @@ class TokenService {
     if (refreshTokenDoc && accessToken) {
       return { accessToken, refreshToken };
     } else {
-      console.log('Tokens were not built!');
+      console.log("Tokens were not built!");
       return null;
     }
   }
@@ -85,21 +69,14 @@ class TokenService {
   async verifyToken(token: string) {
     const pubKey = await KeysService.getPublicKey();
     try {
-      return jwt.verify(token, pubKey);
+      return jwt.verify(token, pubKey) as { uid: string; email: string };
     } catch (err) {
       return null;
     }
   }
 
-  async removeToken(token: string) {
-    const removedToken = await TokenModel.deleteOne(
-      { token },
-      { delete: true }
-    );
-    if (!removedToken) {
-      throw ApiError.ServerError();
-    }
-    return { isTokenRemoved: true };
+  async removeTokens(uid: string) {
+    return await TokenModel.deleteMany({ uid }, { delete: true });
   }
 }
 

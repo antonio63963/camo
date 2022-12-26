@@ -46,7 +46,12 @@ class UserService {
       );
     } else {
       const hashPassword = await bcrypt.hash(password, 3);
-      const user = await UserModel.create({ email, password: hashPassword, name, avatar: '' });
+      const user = await UserModel.create({
+        email,
+        password: hashPassword,
+        name,
+        avatar: "",
+      });
       return user;
     }
   }
@@ -65,8 +70,21 @@ class UserService {
   }
 
   async setAvatar(uid: string, avatar: string) {
-    console.log('Avatar: ', avatar, 'uid: ', uid);
-    return UserModel.findOneAndUpdate({_id: uid}, {avatar}, {new: true});
+    console.log("Avatar: ", avatar, "uid: ", uid);
+    return UserModel.findOneAndUpdate({ _id: uid }, { avatar }, { new: true });
+  }
+
+  async refresh(refreshToken: string) {
+    if (!refreshToken) {
+      throw ApiError.UnauthorizedError();
+    }
+    const tokenDoc = await tokenService.verifyToken(refreshToken);
+    const tokenChecked = await tokenService.findToken(refreshToken);
+    if(!tokenDoc || !tokenChecked) {
+      throw ApiError.UnauthorizedError();
+    } else {
+      return tokenService.generateTokens(tokenDoc.uid, tokenDoc.email);
+    }
   }
 }
 
