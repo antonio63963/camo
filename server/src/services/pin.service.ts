@@ -43,6 +43,11 @@ class PinService {
     if (!editedPin) throw ApiError.ServerError();
     return editedPin;
   }
+  async changeImage(uid: string, pinId: string, image: string) {
+    const pin = await PinModel.findOneAndUpdate({_id: pinId, postedBy: uid}, {image});
+    if(!pin && !pin.image) throw ApiError.ServerError();
+    return pin.image;
+  }
 
   async addNewComment(commentData: Comment) {
     const { _id } = await commentService.create(commentData);

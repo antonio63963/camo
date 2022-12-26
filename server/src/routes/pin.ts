@@ -8,6 +8,7 @@ import materialUrlSchema from "schemas/materialUrlSchema";
 import validateSchema from "middlewares/validateSchema";
 import checkAuth from "middlewares/checkAuth";
 import uploadImage from "middlewares/upoadImage";
+import { uploadPinImage } from "middlewares/upload";
 
 const pinRouter = express.Router();
 
@@ -39,11 +40,12 @@ pinRouter.delete(
 );
 
 pinRouter.put(
-  "/",
+  "/:id/image",
   // checkIsTeacher,
   // listTitleSchema,
   // validateSchema,
-  PinController.edit
+  uploadPinImage,
+  PinController.editImage
 );
 
 
