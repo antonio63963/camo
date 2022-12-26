@@ -25,7 +25,7 @@ const PageNotFound: FC<ErrorProps> = ({ errCode, errMessage }) => {
         <h1 className="mt-5">Error</h1>
         <p>{errMessage}</p>
         <h4 className="mt-3">Error code: {errCode}</h4>
-        <button onClick={() => navigate('/')}>Go Home</button>
+        <button onClick={() => navigate('/home')}>Go Home</button>
       </div>
     </div>
   );

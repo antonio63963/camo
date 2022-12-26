@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { FC, useState } from "react";
 import { Link } from "react-router-dom";
 
 import { MdDownloadForOffline } from "react-icons/md";
@@ -6,6 +6,7 @@ import { MdDownloadForOffline } from "react-icons/md";
 import storage from "utils/appStorage";
 
 import { CreateComment } from "components";
+import EditPinContainer from "containers/EditPinContainer";
 
 const iconStyle =
   "bg-white w-9 h-9 rounded-full flex items-center justify-center text-dark text-xl opacity-75 hover:opacity-100 hover:shadow-md outline-none";
@@ -24,6 +25,7 @@ type Comment = {
 };
 
 type Pin = {
+  id: string;
   image: string;
   title: string;
   about: string;
@@ -41,6 +43,15 @@ type PinDetailsProps = {
   isAddComment: boolean;
   errorComment: string | null;
 };
+enum Fields {
+  image = "image",
+  text = "text",
+}
+
+type TEdit = {
+  isEdit: boolean;
+  fields?: Fields;
+};
 
 const PinDetails: FC<PinDetailsProps> = ({
   pin,
@@ -51,11 +62,21 @@ const PinDetails: FC<PinDetailsProps> = ({
   isAddComment,
   errorComment,
 }) => {
+  const [editModal, setEditModal] = useState<TEdit>({ isEdit: false });
   return (
     <div
       className="flex xl-flex-row flex-col m-auto bg-white"
       style={{ maxWidth: "1500px", borderRadius: "32px" }}
     >
+      {editModal.isEdit && (
+        <EditPinContainer
+          title={pin.title}
+          image={pin.image}
+          about={pin.about}
+          id={pin.id}
+          close={() => setEditModal({ isEdit: false })}
+        />
+      )}
       <div className="flex justify-center items-center md:items-start flex-initial">
         <img
           src={pin?.image}
@@ -87,17 +108,48 @@ const PinDetails: FC<PinDetailsProps> = ({
             <p className="mt-3">{pin?.about}</p>
           </div>
         </div>
-        <Link
-          to={`/user-profile/:${user.id}`}
-          className="flex gap-2 mt-5 items-center bg-white rounded-lg"
-        >
-          <img
-            src={pin?.postedBy.picture  ?? pin?.postedBy.avatar}
-            alt="user-img"
-            className="w-10 rounded-full"
-          />
-          <p className="font-semibold capitalize">{pin?.postedBy.name}</p>
-        </Link>
+        <div className="flex items-center justify-between max-[470px]:flex-col max-[470px]:items-start">
+          <Link
+            to={`/user-profile/:${user.id}`}
+            className="flex gap-2 mt-5 items-center bg-white rounded-lg"
+          >
+            <img
+              src={
+                pin?.postedBy.picture ??
+                `${process.env.REACT_APP_API_BASE_URL}${pin?.postedBy.avatar}`
+              }
+              alt="user-img"
+              className="w-10 rounded-full"
+            />
+            <p className="font-semibold capitalize">{pin?.postedBy.name}</p>
+          </Link>
+
+          {/* EDIT */}
+          {user.id === pin.postedBy.id && (
+            <div className="flex mt-5 max-[370px]:flex-col">
+              <h2 className="mr-5">Edit Pin:</h2>
+              <div>
+                <button
+                  onClick={() =>
+                    setEditModal({ isEdit: true, fields: Fields.image })
+                  }
+                  className="border px-3 py-1 rounded-full text-gray-500 hover:bg-black hover:text-gray-100 mr-3"
+                >
+                  Edit Image
+                </button>
+                <button
+                  onClick={() =>
+                    setEditModal({ isEdit: true, fields: Fields.text })
+                  }
+                  className="border px-3 py-1 rounded-full text-gray-500 hover:bg-black hover:text-gray-100"
+                >
+                  Edit Fields
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+
         <h2 className="mt-5 text-2xl">Comments</h2>
         <div className="max-h-370 overflow-y-auto">
           {pin?.comments?.map((comment, index) => (

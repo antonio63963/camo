@@ -71,11 +71,11 @@ const ImageFileInput: FC<InputProps> = ({
           </p>
         </div>
       ) : (
-        <div className="relative flex justify-center items-center">
+        <div style={{ maxHeight: '100%'}} className="relative flex justify-center items-center">
           <img
+          style={{objectFit: 'contain', maxHeight: '100%'}}
             src={URL.createObjectURL(imageAsset!)}
             alt="uploaded-pic"
-            className="object-fit"
           />
           <button
             type="button"
