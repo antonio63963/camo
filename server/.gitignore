@@ -2,6 +2,7 @@
 node_modules/
 dist/
 keys/
+upload/
 
 # Optional npm cache directory
 .npm

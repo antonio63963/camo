@@ -6,7 +6,6 @@ import storage from "services/storage.service";
 
 import MasonryLayout from "./MasonryLayout";
 import Spinner from "./Spinner";
-import Pin from "components/Pin";
 import catchErrors from "services/error.service";
 import { AppContext } from "context";
 

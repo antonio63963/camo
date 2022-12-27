@@ -1,19 +1,10 @@
 import express from "express";
 
 import PinController from "controllers/PinController";
-import checkIsTeacher from "middlewares/checkIsTeacher";
-import materialTitleSchema from "schemas/materialTitleSchema";
-import listTitleSchema from "schemas/listTitleSchema";
-import materialUrlSchema from "schemas/materialUrlSchema";
-import validateSchema from "middlewares/validateSchema";
-import checkAuth from "middlewares/checkAuth";
-import uploadImage from "middlewares/upoadImage";
 import { uploadPinImage } from "middlewares/upload";
-import deleteImageFile from "middlewares/deleteImageFile";
 
 const pinRouter = express.Router();
 
-// pinRouter.get("/students", PinController.students);
 pinRouter.get("/", PinController.index);
 pinRouter.get("/userPins", PinController.userPins);
 pinRouter.get("/likedPins", PinController.likedPins);
