@@ -1,7 +1,7 @@
 import PinModel from "models/pin";
 import { General } from "models/pin.type";
 import { Comment } from "models/comment.type";
-import { ObjectId } from "mongodb";
+import serverUtils from 'services/serviceUtils'
 
 import serviceUtils from "./serviceUtils";
 import commentService from "services/comment.service";
@@ -62,12 +62,13 @@ class PinService {
     const pin = await PinModel.findOneAndUpdate(
       { _id: payload.pinId, postedBy: payload.uid },
       update,
-      {new: true}
     );
     if (!pin) throw ApiError.ServerError();
-    return pin.imageLink
-      ? { updatedImageLink: pin.imageLink }
-      : { updatedImageAsset: pin.imageAsset };
+    if (pin.imageAsset) serverUtils.deleteImageFile(pin.imageAsset);
+    
+    return payload.imageLink
+      ? { updatedImageLink: payload.imageLink }
+      : { updatedImageAsset: payload.imageAsset };
   }
 
   async addNewComment(commentData: Comment) {
@@ -86,6 +87,7 @@ class PinService {
       postedBy,
     });
     if (!removedDoc) throw ApiError.ServerError();
+    if (removedDoc.imageAsset) serverUtils.deleteImageFile(removedDoc.imageAsset);
   }
 
   async getPinById(pinId: string) {
