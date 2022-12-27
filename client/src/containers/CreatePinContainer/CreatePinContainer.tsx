@@ -72,19 +72,25 @@ const CreatePin: FC<CreatePinProps> = ({ user }) => {
 
   const savePin = useCallback(async () => {
     if (!validationFields()) return;
-    const pinData = {
-      title,
-      about,
-      category,
-      imageAsset,
-      imageLink,
-      postedBy: user.id,
-    };
+    const formData = new FormData();
+    formData.append('title', title);
+    formData.append('about', about);
+    formData.append('category', category);
+    formData.append('postedBy', user.id);
+    imageAsset ? formData.append('imageAsset', imageAsset) : formData.append('imageLink', imageLink);
+    // const pinData = {
+    //   title,
+    //   about,
+    //   category,
+    //   imageAsset,
+    //   imageLink,
+    //   postedBy: user.id,
+    // };
 
     try {
       const {
         data: { pin },
-      } = await axios.post("/pins", pinData);
+      } = await axios.post("/pins", formData);
       if (pin) {
         navigate("/");
       }

@@ -1,13 +1,14 @@
-import React, { FC, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 import { MdDownloadForOffline } from "react-icons/md";
 
 import storage from "utils/appStorage";
+import { setLink } from "utils/data";
 
 import { CreateComment } from "components";
 import EditPinContainer from "containers/EditPinContainer";
-
+import noImage from 'assets/noImage.png';
 const iconStyle =
   "bg-white w-9 h-9 rounded-full flex items-center justify-center text-dark text-xl opacity-75 hover:opacity-100 hover:shadow-md outline-none";
 
@@ -26,7 +27,8 @@ type Comment = {
 
 type Pin = {
   id: string;
-  image: string;
+  imageAsset?: string;
+  imageLink?: string;
   title: string;
   about: string;
   postedBy: User;
@@ -63,6 +65,11 @@ const PinDetails: FC<PinDetailsProps> = ({
   errorComment,
 }) => {
   const [editModal, setEditModal] = useState<TEdit>({ isEdit: false });
+  const [pinImage, setPinImage] = useState<string>(pin.imageLink ?? setLink(pin.imageAsset) );
+
+  useEffect(() => {
+  console.log(pinImage)
+  },[pinImage])
   return (
     <div
       className="flex xl-flex-row flex-col m-auto bg-white"
@@ -70,16 +77,18 @@ const PinDetails: FC<PinDetailsProps> = ({
     >
       {editModal.isEdit && (
         <EditPinContainer
-          title={pin.title}
-          image={pin.image}
-          about={pin.about}
+          // title={pin.title}
+          // about={pin.about}
+          // id={pin.id}
           id={pin.id}
+          setPinImage={setPinImage}
           close={() => setEditModal({ isEdit: false })}
         />
       )}
+
       <div className="flex justify-center items-center md:items-start flex-initial">
         <img
-          src={pin?.image}
+          src={pinImage}
           className="rounded-t-3xl rounded-b-lg"
           alt="pin"
         />

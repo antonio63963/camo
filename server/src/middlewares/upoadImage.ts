@@ -1,6 +1,9 @@
 import { Request, Response, NextFunction } from "express";
 
 const uploadImage = async (req: Request, res: Response, next: NextFunction) => {
+  if(req.body.imagePath) {
+    
+  }
   const { uid } = res.locals.auth;
   console.log('Upoad: ', uid, req.body)
   if(req.body.imageLink) {

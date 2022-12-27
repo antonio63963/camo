@@ -20,9 +20,17 @@ const generalSchema = new Schema<General>(
       type: Schema.Types.ObjectId,
       ref: "user",
     },
-    image: {
+    imageAsset: {
       type: Schema.Types.String,
-      required: true,
+      required: function() {
+        return !this.imageLink;
+      },
+    },
+    imageLink: {
+      type: Schema.Types.String,
+      required: function() {
+        return !this.imageAsset;
+      }
     },
     about: {
       type: Schema.Types.String,

@@ -4,7 +4,8 @@ type General = {
   id?: string 
   title: string;
   postedBy: ObjectId;
-  image: string;
+  imageAsset?: string;
+  imageLink?: string;
   about: string;
   category: string;
   comments: ObjectId[];

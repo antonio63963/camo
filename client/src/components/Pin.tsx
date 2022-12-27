@@ -1,11 +1,12 @@
-import React, { FC, useCallback, useContext, useState } from "react";
+import React, { FC, useCallback, useContext, useEffect, useState } from "react";
+import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 
 import { MdDownloadForOffline } from "react-icons/md";
 import { AiTwotoneDelete, AiFillLike, AiOutlineLike } from "react-icons/ai";
 import { BsFillArrowUpRightCircleFill } from "react-icons/bs";
 
-import axios from "axios";
+import { setLink } from "utils/data";
 import { AppContext } from "context";
 import catchErrors from "services/error.service";
 import NoAvatar from "components/NoAvatar/NoAvatar";
@@ -27,7 +28,8 @@ type User = {
 type DataPin = {
   id: string;
   postedBy: User;
-  image: string;
+  imageAsset?: string;
+  imageLink?: string;
   category: string;
   likes: User[];
 };
@@ -39,7 +41,7 @@ type PinProps = {
 };
 
 const Pin: FC<PinProps> = ({
-  pin: { id, postedBy, image, likes, category },
+  pin: { id, postedBy, imageAsset, imageLink, likes, category },
   user,
   deletePinFromArray,
 }) => {
@@ -109,7 +111,7 @@ const Pin: FC<PinProps> = ({
         onClick={() => navigate(`/pin-detail/${id}`)}
         className="relative cursor-zoom-in w-auto hover:shadow-lg rounded-lg overflow-hidden transition-all duration-500 ease-in-out"
       >
-        <img className="rounded-lg w-full" alt="user-pin" src={image} />
+        <img className="rounded-lg w-full" alt="user-pin" src={imageLink ?? setLink(imageAsset)} />
         {postHovered && (
           <div
             className="absolute top-0 w-full h-full flex flex-col justify-between p-2 pl-1 z-50"
@@ -118,7 +120,7 @@ const Pin: FC<PinProps> = ({
             <div className="flex items-center justify-between">
               <div className="flex gap-2">
                 <a
-                  href={image} //path to dwl the image
+                  href={imageLink ?? setLink(imageAsset)} //path to dwl the image
                   download
                   onClick={(e) => e.stopPropagation()}
                   className={iconStyle}
@@ -175,14 +177,14 @@ const Pin: FC<PinProps> = ({
         className="flex gap-2 mt-2 items-center mt-2"
       >
         {postedBy.picture || postedBy.avatar ? (
-            <img
-              src={postedBy.picture ?? avatar}
-              alt="userProfile"
-              className="w-8 h-8 rounded-full object-cover"
-            />
-          ) : (
-            <NoAvatar theme={"light"} />
-          )}
+          <img
+            src={postedBy.picture ?? avatar}
+            alt="userProfile"
+            className="w-8 h-8 rounded-full object-cover"
+          />
+        ) : (
+          <NoAvatar theme={"light"} />
+        )}
         <p className="font-semibold capitalize">{postedBy.name}</p>
       </Link>
     </div>

@@ -1,6 +1,14 @@
-import axios from 'axios';
+import noImage from 'assets/noImage.png';
 
-export const categories = [
+const setLink = (imageLink?: string) => {
+  if(imageLink) {
+    return `${process.env.REACT_APP_API_BASE_URL}${imageLink}`;
+  } else {
+    return noImage;
+  }
+};
+
+const categories = [
   {
     name: 'cars',
     image: 'https://i.pinimg.com/750x/eb/47/44/eb4744eaa3b3ccd89749fa3470e2b0de.jpg',
@@ -52,6 +60,7 @@ export const categories = [
   },
 ];
 
-export const searchQuery = async (searchTerm: string) => {
-  return await axios.get(`/${searchTerm}`);
+export  {
+  setLink,
+  categories,
 }
