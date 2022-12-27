@@ -32,7 +32,7 @@ const storagePinImage = multer.diskStorage({
     const filePath = `${uuidv4()}_${Date.now()}.${typeFile}`;
 
     cb(null, `${filePath}`);
-    req.body.avatarPath = `/pinImages/${filePath}`;
+    req.body.imageAsset = `/pinImages/${filePath}`;
   },
 });
 

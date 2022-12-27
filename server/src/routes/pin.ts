@@ -9,6 +9,7 @@ import validateSchema from "middlewares/validateSchema";
 import checkAuth from "middlewares/checkAuth";
 import uploadImage from "middlewares/upoadImage";
 import { uploadPinImage } from "middlewares/upload";
+import deleteImageFile from "middlewares/deleteImageFile";
 
 const pinRouter = express.Router();
 
@@ -24,8 +25,7 @@ pinRouter.post(
   "/",
   // listTitleSchema,
   // validateSchema,
-  checkAuth,
-  uploadImage,
+  uploadPinImage,
   PinController.create
 );
 
@@ -45,7 +45,8 @@ pinRouter.put(
   // listTitleSchema,
   // validateSchema,
   uploadPinImage,
-  PinController.editImage
+  // deleteImageFile,
+  PinController.editImage,
 );
 
 
