@@ -30,11 +30,10 @@ const PinDetailsContainer: FC<PinProps> = ({ user }) => {
         data: { status, pinData },
       } = await axios.get(`/pins/${pinId}`);
       if (status === "ok") {
-        console.log(pinData);
         setPinDetails(pinData);
-      };
+      }
     } catch (err) {}
-  };
+  }
 
   const getSamePins = useCallback(async () => {
     if (pinDetails && pinDetails.category) {
@@ -47,8 +46,8 @@ const PinDetailsContainer: FC<PinProps> = ({ user }) => {
         }
       } catch (err) {
         setModal({ isModal: true, ...catchErrors(err) });
-      };
-    };
+      }
+    }
   }, [pinDetails, setModal]);
 
   const deletePinFromArray = useCallback(
@@ -75,8 +74,8 @@ const PinDetailsContainer: FC<PinProps> = ({ user }) => {
     if (isValid) {
       try {
         const {
-          data: { status, comments },
-        } = await axios.post<{ status: string; comments: Comment[] }>(
+          data: { status, addedComment },
+        } = await axios.post<{ status: string; addedComment: Comment }>(
           `/pins/${pinId}/comments`,
           {
             message: comment,
@@ -84,7 +83,9 @@ const PinDetailsContainer: FC<PinProps> = ({ user }) => {
             data: new Date().getTime(),
           }
         );
-        if (status === "ok" && pinDetails) {
+        console.log("ADDED: ", addedComment);
+        if (status === "ok" && pinDetails?.comments) {
+          const comments = [...pinDetails?.comments, addedComment];
           setPinDetails({ ...pinDetails, comments });
         }
       } catch (err: any) {

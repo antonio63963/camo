@@ -9,6 +9,9 @@ type User = {
 type Comment = {
   message: string;
   user: User;
+  data?: number;
+  id?: string;
+  pinId?: string;
 };
 
 type PinProps = {
