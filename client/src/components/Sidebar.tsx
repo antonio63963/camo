@@ -95,7 +95,7 @@ const Sidebar: FC<SidebarProps> = ({ user, onCloseSidebar, onLogout }) => {
           {user.picture || avatar ? (
             <img
               src={user.picture ?? avatar}
-              className="w-10 h-10 rounded-full"
+              className="w-10 h-10 rounded-full object-cover"
               alt="user-img"
             />
           ) : (

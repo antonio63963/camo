@@ -23,6 +23,8 @@ type User = {
 type Comment = {
   message: string;
   user: User;
+  picture?: string;
+  avatar?: string;
 };
 
 type Pin = {
@@ -128,7 +130,7 @@ const PinDetails: FC<PinDetailsProps> = ({
                 `${process.env.REACT_APP_API_BASE_URL}${pin?.postedBy.avatar}`
               }
               alt="user-img"
-              className="w-10 rounded-full"
+              className="w-10 h-10 rounded-full object-cover"
             />
             <p className="font-semibold capitalize">{pin?.postedBy.name}</p>
           </Link>
@@ -167,9 +169,9 @@ const PinDetails: FC<PinDetailsProps> = ({
               key={index}
             >
               <img
-                src={comment.user.picture ?? comment.user.avatar}
+                src={comment.user.picture ?? setLink(comment.user.avatar)}
                 alt="user-profile"
-                className="w-10 h-10 rounded-full cursor-pointer"
+                className="w-10 h-10 rounded-full cursor-pointer object-cover"
               />
               <div className="mt-2 flex flex-col">
                 <p>{comment.user.name}</p>

@@ -31,7 +31,7 @@ const CreatePin: FC<CreatePinProps> = ({ user }) => {
       .string(title)
       .isEmpty()
       ?.minLength(2)
-      ?.maxLength(30)
+      ?.maxLength(50)
       ?.result();
     const aboutValidationResult = validation
       .string(about)
@@ -78,14 +78,6 @@ const CreatePin: FC<CreatePinProps> = ({ user }) => {
     formData.append('category', category);
     formData.append('postedBy', user.id);
     imageAsset ? formData.append('imageAsset', imageAsset) : formData.append('imageLink', imageLink);
-    // const pinData = {
-    //   title,
-    //   about,
-    //   category,
-    //   imageAsset,
-    //   imageLink,
-    //   postedBy: user.id,
-    // };
 
     try {
       const {

@@ -86,20 +86,19 @@ const UploadAvatar: FC<UploadProps> = ({ closeModal }) => {
           <img
             src={URL.createObjectURL(imageAsset)}
             alt="uploaded-pic"
-            className="object-fit w-20 h-20 rounded-full"
-            // style={{width: "50px"}}
+            className="object-fit w-20 h-20 rounded-full object-cover"
           />
           <div>
             <button
               type="button"
-              className="p-3 mt-3 mr-5 rounded-full bg-white text-xl text-red-500 cursor-pointer outline-none hover:shadow-md transition-all duration-500 ease-in-out"
+              className="p-3 mt-3 mr-5 rounded-full bg-red-500 text-xl text-white cursor-pointer outline-none hover:shadow-md transition-all duration-500 ease-in-out"
               onClick={() => setImageAsset(null)}
             >
               <MdDelete />
             </button>
             <button
               type="button"
-              className="p-3 mt-3 rounded-full bg-white text-xl cursor-pointer outline-none hover:shadow-md transition-all duration-500 ease-in-out"
+              className="p-3 mt-3 rounded-full bg-white text-red-500 text-xl cursor-pointer outline-none hover:shadow-md transition-all duration-500 ease-in-out"
               onClick={() => {
                 const formData = new FormData();
                 formData.append('imageAsset', imageAsset);

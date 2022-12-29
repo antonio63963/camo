@@ -178,7 +178,7 @@ const Pin: FC<PinProps> = ({
       >
         {postedBy.picture || postedBy.avatar ? (
           <img
-            src={postedBy.picture ?? avatar}
+            src={postedBy.picture ?? setLink(postedBy.avatar)}
             alt="userProfile"
             className="w-8 h-8 rounded-full object-cover"
           />

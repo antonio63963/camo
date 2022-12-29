@@ -13,7 +13,7 @@ import { AiFillCloseCircle, AiOutlineCloudUpload } from "react-icons/ai";
 import { AppContext } from "context";
 import { Sidebar, UploadAvatar, UserProfile } from "../../components";
 import { PinsContainer } from "containers";
-import logo from "assets/logo.png";
+
 import camoLogo from "assets/camoLogo.png";
 
 import { User } from "./PageHome.type";
@@ -65,7 +65,7 @@ const PageHome: FC = () => {
                 <img
                   src={userInfo.picture ?? avatar}
                   alt="userImage"
-                  className="w-10 rounded-full"
+                  className="w-10 h-10 rounded-full object-cover"
                 />
               ) : (
                 <NoAvatar theme={"dark"} />

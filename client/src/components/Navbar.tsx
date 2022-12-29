@@ -45,7 +45,7 @@ const Navbar: FC<NavProps> = ({ user }) => {
               <img
                 src={user.picture ?? avatar}
                 alt="userImage"
-                className="w-10 rounded-full"
+                className="w-10 h-10 rounded-full object-cover"
               />
             ) : (
               <NoAvatar theme={"light"} />
