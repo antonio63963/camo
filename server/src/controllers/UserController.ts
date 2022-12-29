@@ -83,7 +83,7 @@ class AuthController {
     try {
       const avatar = await userService.setAvatar(
         res.locals.auth.uid,
-        req.body.avatarPath.avatar
+        req.body.avatarPath
       );
       res.json({ avatar });
     } catch (err) {
