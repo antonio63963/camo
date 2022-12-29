@@ -8,9 +8,9 @@ class CommentService {
   async create(commentData: Comment) {
     const comment = new CommentModel();
     serviceUtils.createDoc(comment, commentData);
-    const { _id } = await comment.save();
-    if(!_id) throw ApiError.ServerError();
-    return _id;
+    const doc = await comment.save();
+    if(!doc) throw ApiError.ServerError();
+    return doc;
   }
 
 };

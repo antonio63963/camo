@@ -13,14 +13,13 @@ class PinController {
   }
 
   async create(req: Request, res: Response, next: NextFunction) {
-    console.log('CreatePin: ', req.body)
     try {
       const createdPin = await pinService.createPin(req.body);
       res.json({
         pin: createdPin,
       });
     } catch (err) {
-      console.log('CreatePin ERROR: ', err)
+      console.log("CreatePin ERROR: ", err);
       next(err);
     }
   }
@@ -37,13 +36,13 @@ class PinController {
 
   async addComment(req: Request, res: Response, next: NextFunction) {
     try {
-      const comments = await pinService.addNewComment({
+      const newComment = await pinService.addNewComment({
         ...req.body,
         pinId: req.params.id,
       });
       res.json({
         status: "ok",
-        comments,
+        addedComment: newComment,
       });
     } catch (err) {
       next(err);
@@ -53,13 +52,11 @@ class PinController {
   async editImage(req: Request, res: Response, next: NextFunction) {
     const payload = {
       uid: res.locals.auth.uid,
-       pinId: req.params.id,
-       ...req.body,
-    }
+      pinId: req.params.id,
+      ...req.body,
+    };
     try {
-      const image = await pinService.changeImage(
-       payload
-      );
+      const image = await pinService.changeImage(payload);
       res.json({
         status: "ok",
         ...image,

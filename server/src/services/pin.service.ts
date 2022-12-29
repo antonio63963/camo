@@ -1,7 +1,7 @@
 import PinModel from "models/pin";
 import { General } from "models/pin.type";
 import { Comment } from "models/comment.type";
-import serverUtils from 'services/serviceUtils'
+import serverUtils from "services/serviceUtils";
 
 import serviceUtils from "./serviceUtils";
 import commentService from "services/comment.service";
@@ -57,28 +57,37 @@ class PinService {
       throw ApiError.BadRequestError("Not enough the image!");
 
     const update = payload.imageLink
-      ? { imageLink: payload.imageLink, $unset: {imageAsset: 1} }
-      : { imageAsset: payload.imageAsset, $unset: {imageLink: 1} };
+      ? { imageLink: payload.imageLink, $unset: { imageAsset: 1 } }
+      : { imageAsset: payload.imageAsset, $unset: { imageLink: 1 } };
     const pin = await PinModel.findOneAndUpdate(
       { _id: payload.pinId, postedBy: payload.uid },
-      update,
+      update
     );
     if (!pin) throw ApiError.ServerError();
     if (pin.imageAsset) serverUtils.deleteImageFile(pin.imageAsset);
-    
+
     return payload.imageLink
       ? { updatedImageLink: payload.imageLink }
       : { updatedImageAsset: payload.imageAsset };
   }
 
   async addNewComment(commentData: Comment) {
-    const { _id } = await commentService.create(commentData);
+    const commentDoc = await commentService.create(commentData);
+    if (!commentDoc) throw ApiError.ServerError();
+
+    const populatedComment = await commentDoc.populate(
+      "user",
+      "name id avatar picture email"
+    );
+    if (!populatedComment) throw ApiError.ServerError();
+
     const doc = await PinModel.findOneAndUpdate(
       { _id: commentData.pinId },
-      { $push: { comments: _id } }
+      { $push: { comments: populatedComment._id } }
     );
     if (!doc) throw ApiError.ServerError();
-    return doc.comments;
+
+    return populatedComment;
   }
 
   async removePin(pinId: string, postedBy: string) {
@@ -87,7 +96,8 @@ class PinService {
       postedBy,
     });
     if (!removedDoc) throw ApiError.ServerError();
-    if (removedDoc.imageAsset) serverUtils.deleteImageFile(removedDoc.imageAsset);
+    if (removedDoc.imageAsset)
+      serverUtils.deleteImageFile(removedDoc.imageAsset);
   }
 
   async getPinById(pinId: string) {
