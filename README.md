@@ -1,8 +1,8 @@
-#Camo
+# Camo
 A social app that allows you to share photos by categories and take commits.
 This is a full stack app with Type Script.
 
-##Features:
+## Features:
 
 - Google Auth (new API)
 - Login by Email (Account with photo)
@@ -13,7 +13,7 @@ This is a full stack app with Type Script.
 
 ---
 
-##Client:
+## Client:
 
 - **React.js**.
 - **Type Script.**
@@ -21,7 +21,7 @@ This is a full stack app with Type Script.
 
 ---
 
-##Server:
+## Server:
 
 - **Node.js/Express.js.**
 - **MongoDB.**
@@ -29,7 +29,7 @@ This is a full stack app with Type Script.
 
 ---
 
-###Custom validation:
+### Custom validation:
 
 ```
 const nameInput = validation
@@ -41,4 +41,4 @@ const nameInput = validation
 ```
 ![](camo.png)
 
-##Thank you for watching!
+## Thank you for watching!
